@@ -5,10 +5,5 @@ plugins {
 
 rootProject.name = "Cogwheel"
 
-// Main library components
 include(":cogwheel-core")
 include(":cogwheel-dsl")
-
-// Test consumer clients
-include(":test-client-kotlin")
-include(":test-client-java")

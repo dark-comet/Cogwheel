@@ -2,11 +2,17 @@
 guava = "33.1.0-jre"
 junit-jupiter-engine = "5.10.2"
 junit-jupiter-api = "5.11.0"
+ktor-client = "2.3.12"
+kotlinx-serialization = "1.7.2"
 
 [libraries]
+ktor-client-core = { module = "io.ktor:ktor-client-core-jvm", version.ref = "ktor-client" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor-client" }
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter-api" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter-engine" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "1.9.23" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version = "2.0.0" }

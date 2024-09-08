@@ -1,0 +1,7 @@
+{
+  "clientName": "cogwheel",
+  "clientVersion": "0.1",
+  "clientUrl": "https://github.com/dark-comet/Cogwheel",
+  "discordApiUrl": "https://discord.com/api", 
+  "discordApiVersion": 10
+}
