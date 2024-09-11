@@ -30,13 +30,11 @@ class Snowflake(val value: Long) : Comparable<Snowflake> {
     }
     
     companion object {
-        
         private const val DISCORD_EPOCH_TIME_MS = 1_420_070_400_000L
         
         private fun asLong(value: String): Long {
             return value.toLongOrNull() ?: throw IllegalArgumentException("Invalid Snowflake ID: '$value'")
         }
-        
     }
 
     class Serializer : KSerializer<Snowflake> {

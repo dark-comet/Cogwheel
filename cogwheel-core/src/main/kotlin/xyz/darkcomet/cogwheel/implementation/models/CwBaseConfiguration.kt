@@ -13,7 +13,7 @@ internal data class CwBaseConfiguration(
 ) {
     companion object {
         fun load(): CwBaseConfiguration {
-            val resourceStream = CwBaseConfiguration::class.java.getResourceAsStream("/cogwheel_config.json")!!
+            val resourceStream = CwBaseConfiguration::class.java.getResourceAsStream("/cogwheel.json")!!
 
             resourceStream.bufferedReader(Charsets.UTF_8).use {
                 val jsonString = it.readText()

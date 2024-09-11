@@ -4,6 +4,7 @@ import xyz.darkcomet.cogwheel.implementation.authentication.AuthenticationMode
 import xyz.darkcomet.cogwheel.implementation.models.CwBaseConfiguration
 import xyz.darkcomet.cogwheel.implementation.models.CwCustomConfiguration
 import xyz.darkcomet.cogwheel.network.http.CwHttpClient
+import xyz.darkcomet.cogwheel.network.http.KtorHttpClient
 import xyz.darkcomet.cogwheel.network.http.resources.*
 
 internal open class DiscordClientImpl 
@@ -40,7 +41,8 @@ internal constructor(
     init {
         configuration = CwBaseConfiguration.load()
         val configurationOverride = CwCustomConfiguration(clientVersion, clientUrl)
-        httpClient = CwHttpClient(authenticationMode, configuration, configurationOverride)
+        
+        httpClient = KtorHttpClient(authenticationMode, configuration, configurationOverride)
 
         applicationResource = ApplicationResource(httpClient)
         applicationRoleConnectionMetadataResource = ApplicationRoleConnectionMetadataResource(httpClient)

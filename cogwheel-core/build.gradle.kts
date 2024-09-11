@@ -13,7 +13,7 @@ sourceSets {
     create("testIntegration") {
         compileClasspath += sourceSets.main.get().output + sourceSets.test.get().output
         runtimeClasspath += sourceSets.main.get().output + sourceSets.test.get().output
-
+        
         kotlin {
             main {
                 srcDirs("src/main/kotlin")   
