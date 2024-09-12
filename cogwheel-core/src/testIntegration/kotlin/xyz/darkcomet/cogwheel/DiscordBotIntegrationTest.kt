@@ -8,10 +8,11 @@ class DiscordBotIntegrationTest {
     
     @Test
     fun testIt() {
-        val client = DiscordClient.fromBotToken("<redacted>").build()
-        
+        val client = TestDiscordClient.fromEnvBotToken()
+        val api = client.restApi()
+
         runBlocking {
-            val response = client.application().getCurrent()
+            val response = api.application().getCurrent()
             assertEquals(true, response.success)
         }
     }

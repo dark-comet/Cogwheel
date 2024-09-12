@@ -1,9 +1,13 @@
 package xyz.darkcomet.cogwheel.network.http
 
-class CwHttpResponse<T>(
-    val statusCode: Int,
-    val statusMessage: String,
-    val success: Boolean,
-    val responseEntity: T?
-) {
+import kotlinx.serialization.DeserializationStrategy
+
+interface CwHttpResponse {
+
+    val statusCode: Int
+    val statusMessage: String
+    val success: Boolean
+    
+    suspend fun <T> unwrapEntity(deserializationStrategy: DeserializationStrategy<T>) : T?
+    
 }

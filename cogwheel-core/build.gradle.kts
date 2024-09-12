@@ -16,10 +16,10 @@ sourceSets {
         
         kotlin {
             main {
-                srcDirs("src/main/kotlin")   
+                srcDirs("src/testIntegration/kotlin")
             }
-            test {
-                srcDirs("src/test/kotlin")
+            resources {
+                srcDirs("src/testIntegration/resources")
             }
         }
     }
@@ -45,6 +45,8 @@ dependencies {
     testIntegrationRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+kotlin.target.compilations.getByName("testIntegration").associateWith(kotlin.target.compilations.getByName("test"))
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(8)
@@ -60,4 +62,24 @@ idea {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+}
+
+val testIntegration = task<Test>("testIntegration") {
+    description = "Run integration tests"
+    group = "verification"
+    
+    testClassesDirs = sourceSets["testIntegration"].output.classesDirs
+    classpath = sourceSets["testIntegration"].runtimeClasspath
+    
+    shouldRunAfter("test")
+    
+    useJUnitPlatform()
+    
+    testLogging {
+        events("passed")
+    }
+}
+
+tasks.check {
+    dependsOn(testIntegration)
 }

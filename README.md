@@ -2,6 +2,7 @@
 ![Status](https://img.shields.io/badge/Status-In%20Development-orange?style=flat)
 ![Discord API Version](https://img.shields.io/badge/Discord%20API%20Version-v10-green?style=flat)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=flat)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/dc99d8c35fe94c87a427a07499135cd0)](https://app.codacy.com/gh/dark-comet/Cogwheel/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 A Discord API library for JVM-based languages, built in Kotlin. The project consists of two layers: 
 - `cogwheel-core` is the low-level library containing Kotlin language bindings for the Discord API.

@@ -1,202 +1,195 @@
 package xyz.darkcomet.cogwheel.network.http.resources
 
-import xyz.darkcomet.cogwheel.models.Channel
 import xyz.darkcomet.cogwheel.models.Snowflake
 import xyz.darkcomet.cogwheel.network.http.CwHttpClient
 import xyz.darkcomet.cogwheel.network.http.CwHttpResponse
-import xyz.darkcomet.cogwheel.network.http.entities.*
-import xyz.darkcomet.cogwheel.network.http.entities.channel.ChannelEntity
-import xyz.darkcomet.cogwheel.network.http.entities.guild.*
-import xyz.darkcomet.cogwheel.network.http.entities.permission.RoleEntity
-import xyz.darkcomet.cogwheel.network.http.entities.voice.VoiceRegionEntity
 import xyz.darkcomet.cogwheel.network.http.requests.guild.*
-import xyz.darkcomet.cogwheel.network.http.responses.guild.*
 
 class GuildResource
 internal constructor(private val httpClient: CwHttpClient) {
     
-    fun create(request: CreateGuildRequest): CwHttpResponse<GuildEntity> {
+    fun create(request: CreateGuildRequest): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun get(guildId: Snowflake, withCounts: Boolean = false): CwHttpResponse<GuildEntity> {
+    fun get(guildId: Snowflake, withCounts: Boolean = false): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getPreview(guildId: Snowflake): CwHttpResponse<GuildPreviewEntity> {
+    fun getPreview(guildId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun modify(guildId: Snowflake, request: ModifyGuildRequest): CwHttpResponse<GuildEntity> {
+    fun modify(guildId: Snowflake, request: ModifyGuildRequest): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun delete(guildId: Snowflake): CwHttpResponse<GuildEntity> {
+    fun delete(guildId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getChannels(guildId: Snowflake): CwHttpResponse<List<ChannelEntity>> {
+    fun getChannels(guildId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun createChannel(guildId: Snowflake, request: CreateGuildChannelRequest, auditLogReason: String?): CwHttpResponse<Channel> {
+    fun createChannel(guildId: Snowflake, request: CreateGuildChannelRequest, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun modifyChannelPositions(guildId: Snowflake, request: ModifyGuildChannelPositionsRequest): CwHttpResponse<Void> {
+    fun modifyChannelPositions(guildId: Snowflake, request: ModifyGuildChannelPositionsRequest): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun listActiveThreads(guildId: Snowflake): CwHttpResponse<ListGuildActiveThreadsResponse> {
+    fun listActiveThreads(guildId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getMember(guildId: Snowflake, userId: Snowflake): CwHttpResponse<GuildMemberEntity> {
+    fun getMember(guildId: Snowflake, userId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun listMembers(guildId: Snowflake, limit: Int = 1, after: Snowflake? = null): CwHttpResponse<List<GuildMemberEntity>> {
+    fun listMembers(guildId: Snowflake, limit: Int = 1, after: Snowflake? = null): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun searchMembers(guildId: Snowflake, query: String, limit: Int = 1): CwHttpResponse<List<GuildMemberEntity>> {
+    fun searchMembers(guildId: Snowflake, query: String, limit: Int = 1): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun addMember(guildId: Snowflake, request: AddGuildMemberRequest, auditLogReason: String?): CwHttpResponse<AddGuildMemberResponse> {
+    fun addMember(guildId: Snowflake, request: AddGuildMemberRequest, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun modifyMember(guildId: Snowflake, userId: Snowflake, request: ModifyGuildMemberRequest, auditLogReason: String?): CwHttpResponse<GuildMemberEntity> {
+    fun modifyMember(guildId: Snowflake, userId: Snowflake, request: ModifyGuildMemberRequest, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun modifyCurrentMember(guildId: Snowflake, auditLogReason: String?): CwHttpResponse<GuildMemberEntity> {
+    fun modifyCurrentMember(guildId: Snowflake, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
     @Deprecated("Use modifyCurrentMember() instead")
-    fun modifyCurrentUserNickname(guildId: Snowflake, auditLogReason: String?): CwHttpResponse<String> {
+    fun modifyCurrentUserNickname(guildId: Snowflake, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun addMemberRole(guildId: Snowflake, userId: Snowflake, roleId: Snowflake, auditLogReason: String?): CwHttpResponse<Void> {
+    fun addMemberRole(guildId: Snowflake, userId: Snowflake, roleId: Snowflake, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun removeMemberRole(guildId: Snowflake, userId: Snowflake, roleId: Snowflake, auditLogReason: String?): CwHttpResponse<Void> {
+    fun removeMemberRole(guildId: Snowflake, userId: Snowflake, roleId: Snowflake, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun removeMember(guildId: Snowflake, userId: Snowflake, auditLogReason: String?): CwHttpResponse<Void> {
+    fun removeMember(guildId: Snowflake, userId: Snowflake, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getBans(guildId: Snowflake, limit: Int? = null, before: Snowflake? = null, after: Snowflake? = null): CwHttpResponse<List<GuildBanEntity>> {
+    fun getBans(guildId: Snowflake, limit: Int? = null, before: Snowflake? = null, after: Snowflake? = null): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getBan(guildId: Snowflake, userId: Snowflake): CwHttpResponse<GuildBanEntity> {
+    fun getBan(guildId: Snowflake, userId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun createBan(guildId: Snowflake, userId: Snowflake, request: CreateGuildBanRequest, auditLogReason: String?): CwHttpResponse<Void> {
+    fun createBan(guildId: Snowflake, userId: Snowflake, request: CreateGuildBanRequest, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun removeBan(guildId: Snowflake, userId: Snowflake, auditLogReason: String?): CwHttpResponse<Void> {
+    fun removeBan(guildId: Snowflake, userId: Snowflake, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun bulkBan(guildId: Snowflake, request: BulkGuildBanRequest, auditLogReason: String?): CwHttpResponse<BulkGuildBanResponse> {
+    fun bulkBan(guildId: Snowflake, request: BulkGuildBanRequest, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getRoles(guildId: Snowflake, auditLogReason: String?): CwHttpResponse<List<RoleEntity>> {
+    fun getRoles(guildId: Snowflake, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getRole(guildId: Snowflake, roleId: Snowflake): CwHttpResponse<RoleEntity> {
+    fun getRole(guildId: Snowflake, roleId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun createRole(guildId: Snowflake, request: CreateGuildRoleRequest, auditLogReason: String?): CwHttpResponse<RoleEntity> {
+    fun createRole(guildId: Snowflake, request: CreateGuildRoleRequest, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun modifyRolePosition(guildId: Snowflake, request: List<ModifyGuildRolePositionRequest>, auditLogReason: String?): CwHttpResponse<List<RoleEntity>> {
+    fun modifyRolePosition(guildId: Snowflake, request: List<ModifyGuildRolePositionRequest>, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun modifyRole(guildId: Snowflake, roleId: Snowflake, request: ModifyGuildRoleRequest, auditLogReason: String?): CwHttpResponse<RoleEntity> {
+    fun modifyRole(guildId: Snowflake, roleId: Snowflake, request: ModifyGuildRoleRequest, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun modifyMfaLevel(guildId: Snowflake, request: ModifyGuildMfaLevelRequest, auditLogReason: String?): CwHttpResponse<Int> {
+    fun modifyMfaLevel(guildId: Snowflake, request: ModifyGuildMfaLevelRequest, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun deleteRole(guildId: Snowflake, roleId: Snowflake, auditLogReason: String?): CwHttpResponse<Void> {
+    fun deleteRole(guildId: Snowflake, roleId: Snowflake, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getPruneCount(guildId: Snowflake, days: Int? = null, includeRoleIds: List<Snowflake>? = null): CwHttpResponse<GetGuildPruneCountResponse> {
+    fun getPruneCount(guildId: Snowflake, days: Int? = null, includeRoleIds: List<Snowflake>? = null): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun beginPrune(guildId: Snowflake, request: BeginGuildPruneRequest, auditLogReason: String?): CwHttpResponse<BeginGuildPruneResponse> {
+    fun beginPrune(guildId: Snowflake, request: BeginGuildPruneRequest, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getVoiceRegions(guildId: Snowflake): CwHttpResponse<List<VoiceRegionEntity>> {
+    fun getVoiceRegions(guildId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getInvites(guildId: Snowflake): CwHttpResponse<List<InviteEntity>> {
+    fun getInvites(guildId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getIntegrations(guildId: Snowflake): CwHttpResponse<List<GuildIntegrationEntity>> {
+    fun getIntegrations(guildId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun deleteIntegration(guildId: Snowflake, integrationId: Snowflake, auditLogReason: String?): CwHttpResponse<Void> {
+    fun deleteIntegration(guildId: Snowflake, integrationId: Snowflake, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getWidgetSettings(guildId: Snowflake): CwHttpResponse<GuildWidgetSettingsEntity> {
+    fun getWidgetSettings(guildId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun modifyWidget(guildId: Snowflake, request: ModifyGuildWidgetRequest, auditLogReason: String?): CwHttpResponse<GuildWidgetSettingsEntity> {
+    fun modifyWidget(guildId: Snowflake, request: ModifyGuildWidgetRequest, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getWidget(guildId: Snowflake): CwHttpResponse<GuildWidgetEntity> {
+    fun getWidget(guildId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getVanityUrl(guildId: Snowflake): CwHttpResponse<PartialInviteEntity> {
+    fun getVanityUrl(guildId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getWidgetImage(guildId: Snowflake, style: String? = null): CwHttpResponse<Void> {
+    fun getWidgetImage(guildId: Snowflake, style: String? = null): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getWelcomeScreen(guildId: Snowflake): CwHttpResponse<GuildWelcomeScreenEntity> {
+    fun getWelcomeScreen(guildId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun modifyWelcomeScreen(guildId: Snowflake, request: ModifyGuildWelcomeScreenRequest): CwHttpResponse<GuildWelcomeScreenEntity> {
+    fun modifyWelcomeScreen(guildId: Snowflake, request: ModifyGuildWelcomeScreenRequest): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun getOnboarding(guildId: Snowflake): CwHttpResponse<GuildOnboardingEntity> {
+    fun getOnboarding(guildId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
     
-    fun modifyOnboarding(guildId: Snowflake, request: ModifyGuildOnboardingRequest, auditLogReason: String?): CwHttpResponse<GuildOnboardingEntity> {
+    fun modifyOnboarding(guildId: Snowflake, request: ModifyGuildOnboardingRequest, auditLogReason: String?): CwHttpResponse {
         TODO("Not implemented yet")
     }
     

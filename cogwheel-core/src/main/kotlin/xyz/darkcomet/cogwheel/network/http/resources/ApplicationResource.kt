@@ -5,33 +5,34 @@ import xyz.darkcomet.cogwheel.network.http.CwHttpClient
 import xyz.darkcomet.cogwheel.network.http.CwHttpMethod
 import xyz.darkcomet.cogwheel.network.http.CwHttpRequest
 import xyz.darkcomet.cogwheel.network.http.CwHttpResponse
-import xyz.darkcomet.cogwheel.network.http.entities.application.ApplicationEntity
-import xyz.darkcomet.cogwheel.network.http.entities.application.ApplicationInstanceEntity
-import xyz.darkcomet.cogwheel.network.http.entities.application.ApplicationRoleConnectionMetadataEntity
 import xyz.darkcomet.cogwheel.network.http.requests.application.ModifyCurrentApplicationRequest
 import xyz.darkcomet.cogwheel.network.http.requests.application.UpdateApplicationRoleConnectionRecordsRequest
 
 class ApplicationResource
 internal constructor(private val httpClient: CwHttpClient) {
     
-    suspend fun getCurrent(): CwHttpResponse<ApplicationEntity> {
-        val request = CwHttpRequest.Builder(CwHttpMethod.GET, "/applications/@me").build()
-        return httpClient.submit(request, ApplicationEntity.serializer())
+    suspend fun getCurrent(): CwHttpResponse {
+        val request = CwHttpRequest.create(CwHttpMethod.GET, "/applications/@me")
+        return httpClient.submit(request)
     }
     
-    fun modifyCurrent(request: ModifyCurrentApplicationRequest): CwHttpResponse<ApplicationEntity> {
-        TODO("Not implemented yet")
+    suspend fun modifyCurrent(request: ModifyCurrentApplicationRequest): CwHttpResponse {
+        val httpRequest = CwHttpRequest.create(CwHttpMethod.PATCH, "/applications/@me") {
+            jsonParams(request, ModifyCurrentApplicationRequest.serializer())
+        }
+        
+        return httpClient.submit(httpRequest)
     }
     
-    fun getActivityInstance(applicationId: Snowflake): CwHttpResponse<ApplicationInstanceEntity> {
+    fun getActivityInstance(applicationId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
 
-    fun getRoleConnectionMetadataRecords(applicationId: Snowflake): CwHttpResponse<ApplicationRoleConnectionMetadataEntity> {
+    fun getRoleConnectionMetadataRecords(applicationId: Snowflake): CwHttpResponse {
         TODO("Not implemented yet")
     }
 
-    fun updateRoleConnectionMetadataRecords(applicationId: Snowflake, request: UpdateApplicationRoleConnectionRecordsRequest): CwHttpResponse<List<ApplicationRoleConnectionMetadataEntity>> {
+    fun updateRoleConnectionMetadataRecords(applicationId: Snowflake, request: UpdateApplicationRoleConnectionRecordsRequest): CwHttpResponse {
         TODO("Not implemented yet")
     }
     

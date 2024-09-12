@@ -1,28 +1,22 @@
 package xyz.darkcomet.cogwheel
 
-import xyz.darkcomet.cogwheel.implementation.authentication.AuthenticationMode
+import xyz.darkcomet.cogwheel.impl.DiscordClientDependencies
+import xyz.darkcomet.cogwheel.impl.DiscordClientImpl
+import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
 
 class DiscordClientBuilder 
-internal constructor(internal val authenticationMode: AuthenticationMode) {
+internal constructor(private val authenticationMode: AuthenticationMode) {
     
-    private var clientVersion: String? = null
-    private var clientUrl: String? = null
-
-    fun setClientVersion(version: String?): DiscordClientBuilder {
-        clientVersion = version
-        return this
+    var clientVersion: String? = null
+    var clientUrl: String? = null
+    
+    private val dependencies: DiscordClientDependencies = DiscordClientDependencies()
+    
+    internal fun internalDependencies(init: DiscordClientDependencies.() -> Unit) {
+        init.invoke(dependencies)
     }
 
-    fun setClientUrl(clientUrl: String?): DiscordClientBuilder {
-        this.clientUrl = clientUrl
-        return this
-    }
-
-    fun withGateway() : DiscordGatewayClientBuilder {
-        return DiscordGatewayClientBuilder(this, clientVersion, clientUrl)
-    }
-
-    fun build(): DiscordClient {
+    internal fun build(): DiscordClient {
         return DiscordClientImpl(authenticationMode, clientVersion, clientUrl)
     }
 }
