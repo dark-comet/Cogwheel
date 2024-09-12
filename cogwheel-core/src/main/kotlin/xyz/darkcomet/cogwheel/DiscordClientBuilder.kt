@@ -17,6 +17,6 @@ internal constructor(private val authenticationMode: AuthenticationMode) {
     }
 
     internal fun build(): DiscordClient {
-        return DiscordClientImpl(authenticationMode, clientVersion, clientUrl)
+        return DiscordClientImpl(dependencies, authenticationMode, clientVersion, clientUrl)
     }
 }

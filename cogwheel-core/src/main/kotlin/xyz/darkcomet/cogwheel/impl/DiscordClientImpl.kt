@@ -5,77 +5,53 @@ import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
 import xyz.darkcomet.cogwheel.impl.models.CwBaseConfiguration
 import xyz.darkcomet.cogwheel.impl.models.CwCustomConfiguration
 import xyz.darkcomet.cogwheel.network.http.CwHttpClient
-import xyz.darkcomet.cogwheel.network.http.impl.KtorHttpClient
 import xyz.darkcomet.cogwheel.network.http.resources.*
 
 internal open class DiscordClientImpl 
 internal constructor(
+    dependencies: DiscordClientDependencies,
     authenticationMode: AuthenticationMode,
     clientVersion: String?,
     clientUrl: String?
 ) : DiscordClient {
     
-    protected val configuration: CwBaseConfiguration
-    
+    private val configuration: CwBaseConfiguration = CwBaseConfiguration.load()
+
     private val httpClient: CwHttpClient
     private val restApi: RestApiImpl
     
     init {
-        configuration = CwBaseConfiguration.load()
         val configurationOverride = CwCustomConfiguration(clientVersion, clientUrl)
         
-        httpClient = KtorHttpClient(authenticationMode, configuration, configurationOverride)
+        httpClient = dependencies.cwHttpClientFactory.create(authenticationMode, configuration, configurationOverride)
         restApi = RestApiImpl(httpClient)
     }
     
     override fun restApi(): DiscordClient.RestApi = restApi
     
     
-    private class RestApiImpl(httpClient: CwHttpClient) : DiscordClient.RestApi {
+    internal class RestApiImpl(httpClient: CwHttpClient) : DiscordClient.RestApi {
         
-        private val applicationResource: ApplicationResource
-        private val applicationRoleConnectionMetadataResource: ApplicationRoleConnectionMetadataResource
-        private val auditLogResource: AuditLogResource
-        private val autoModerationResource: AutoModerationResource
-        private val channelResource: ChannelResource
-        private val emojiResource: EmojiResource
-        private val entitlementResource: EntitlementResource
-        private val guildResource: GuildResource
-        private val guildScheduledEventResource: GuildScheduledEventResource
-        private val guildTemplateResource: GuildTemplateResource
-        private val inviteResource: InviteResource
-        private val messageResource: MessageResource
-        private val pollResource: PollResource
-        private val skuResource: SkuResource
-        private val stageInstanceResource: StageInstanceResource
-        private val stickerResource: StickerResource
-        private val subscriptionResource: SubscriptionResource
-        private val userResource: UserResource
-        private val voiceResource: VoiceResource
-        private val webhookResource: WebhookResource
-        
-        init {
-            applicationResource = ApplicationResource(httpClient)
-            applicationRoleConnectionMetadataResource = ApplicationRoleConnectionMetadataResource(httpClient)
-            auditLogResource = AuditLogResource(httpClient)
-            autoModerationResource = AutoModerationResource(httpClient)
-            channelResource = ChannelResource(httpClient)
-            emojiResource = EmojiResource(httpClient)
-            entitlementResource = EntitlementResource(httpClient)
-            guildResource = GuildResource(httpClient)
-            guildScheduledEventResource = GuildScheduledEventResource(httpClient)
-            guildTemplateResource = GuildTemplateResource(httpClient)
-            inviteResource = InviteResource(httpClient)
-            messageResource = MessageResource(httpClient)
-            pollResource = PollResource(httpClient)
-            skuResource = SkuResource(httpClient)
-            stageInstanceResource = StageInstanceResource(httpClient)
-            stickerResource = StickerResource(httpClient)
-            subscriptionResource = SubscriptionResource(httpClient)
-            userResource = UserResource(httpClient)
-            voiceResource = VoiceResource(httpClient)
-            webhookResource = WebhookResource(httpClient)
-        }
+        private val applicationResource: ApplicationResource = ApplicationResource(httpClient)
+        private val applicationRoleConnectionMetadataResource: ApplicationRoleConnectionMetadataResource = ApplicationRoleConnectionMetadataResource(httpClient)
+        private val auditLogResource: AuditLogResource = AuditLogResource(httpClient)
+        private val autoModerationResource: AutoModerationResource = AutoModerationResource(httpClient)
+        private val channelResource: ChannelResource = ChannelResource(httpClient)
+        private val emojiResource: EmojiResource = EmojiResource(httpClient)
+        private val entitlementResource: EntitlementResource = EntitlementResource(httpClient)
+        private val guildResource: GuildResource = GuildResource(httpClient)
+        private val guildScheduledEventResource: GuildScheduledEventResource = GuildScheduledEventResource(httpClient)
+        private val guildTemplateResource: GuildTemplateResource = GuildTemplateResource(httpClient)
+        private val inviteResource: InviteResource = InviteResource(httpClient)
+        private val messageResource: MessageResource = MessageResource(httpClient)
+        private val pollResource: PollResource = PollResource(httpClient)
+        private val skuResource: SkuResource = SkuResource(httpClient)
+        private val stageInstanceResource: StageInstanceResource = StageInstanceResource(httpClient)
+        private val stickerResource: StickerResource = StickerResource(httpClient)
+        private val subscriptionResource: SubscriptionResource = SubscriptionResource(httpClient)
+        private val userResource: UserResource = UserResource(httpClient)
+        private val voiceResource: VoiceResource = VoiceResource(httpClient)
+        private val webhookResource: WebhookResource = WebhookResource(httpClient)
 
         override fun application(): ApplicationResource = applicationResource
         override fun applicationRoleConnectionMetadata(): ApplicationRoleConnectionMetadataResource = applicationRoleConnectionMetadataResource

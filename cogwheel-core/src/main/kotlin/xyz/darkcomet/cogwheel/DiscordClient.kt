@@ -33,10 +33,6 @@ interface DiscordClient {
         fun webhook(): WebhookResource
     }
     
-    interface Interactions {
-        
-    }
-    
     companion object {
         fun fromBotToken(token: String, init: (DiscordClientBuilder.() -> Unit)? = null): DiscordClient {
             val authMode = BotTokenAuthenticationMode(token)
