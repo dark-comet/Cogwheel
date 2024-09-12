@@ -23,7 +23,7 @@ internal constructor(
         }
         
         fun <T> jsonParams(value: T, serializationStrategy: SerializationStrategy<T>) : Builder {
-            bodyContent = Json.encodeToString(serializationStrategy, value)
+            bodyContent = JSON_SERIALIZER.encodeToString(serializationStrategy, value)
             return this
         }
         
@@ -34,6 +34,8 @@ internal constructor(
     }
     
     companion object {
+        private val JSON_SERIALIZER = Json { encodeDefaults = false }
+        
         internal fun create(method: CwHttpMethod, urlPath: String, init: (Builder.() -> Unit)? = null): CwHttpRequest {
             val builder = Builder(method, urlPath)
             init?.invoke(builder)

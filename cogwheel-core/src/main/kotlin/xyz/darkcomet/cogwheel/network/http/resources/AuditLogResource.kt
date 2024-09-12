@@ -7,8 +7,8 @@ import xyz.darkcomet.cogwheel.network.entities.guild.GuildAuditLogEntity
 
 class AuditLogResource internal constructor(httpClient: CwHttpClient) {
 
-    fun getAuditLog(guildId: Snowflake): CwHttpResponse {
-        TODO("Not implemented yet")
-    }
+//    fun getAuditLog(guildId: Snowflake): CwHttpResponse {
+//        TODO("Not implemented yet")
+//    }
     
 }

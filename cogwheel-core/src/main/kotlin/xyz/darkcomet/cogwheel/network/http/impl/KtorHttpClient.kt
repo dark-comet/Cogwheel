@@ -3,6 +3,7 @@ package xyz.darkcomet.cogwheel.network.http.impl
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
 import xyz.darkcomet.cogwheel.impl.models.CwBaseConfiguration
@@ -39,7 +40,7 @@ internal class KtorHttpClient(
         return "DiscordBot ($officialUrl, $officialVersion) $libName/$libVersion"
     }
 
-    override suspend fun submit(request: CwHttpRequest): CwHttpResponse {
+    override suspend fun submit(request: CwHttpRequest): CwHttpResponse.Raw {
     
         val endpointUrl = getEndpointUrl(request.endpointPath)
         
@@ -61,8 +62,10 @@ internal class KtorHttpClient(
             contentType(contentType)
             setBody(bodyContent)
         }
-        
-        return KtorHttpResponse(httpResponse)
+
+        val contentBody = httpResponse.bodyAsText()
+
+        return KtorHttpResponse.Raw(httpResponse, contentBody)
     }
     
     private fun getEndpointUrl(endpointUrl: String): String {

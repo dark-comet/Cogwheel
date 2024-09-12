@@ -6,30 +6,46 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.Json
 import xyz.darkcomet.cogwheel.network.http.CwHttpResponse
 
-internal class KtorHttpResponse(private val httpResponse: HttpResponse) : CwHttpResponse {
-    
-    override val statusCode: Int
-        get() = httpResponse.status.value
-    
-    override val statusMessage: String
-        get() = httpResponse.status.description
-    
-    override val success: Boolean
-        get() = httpResponse.status.isSuccess()
-    
+internal class KtorHttpResponse<T>(
+    override val raw: CwHttpResponse.Raw,
+    override val entity: T?
+) : CwHttpResponse<T> {
 
-    override suspend fun <T> unwrapEntity(deserializationStrategy: DeserializationStrategy<T>): T? {
-        if (!success || httpResponse.contentType() != ContentType.Application.Json) {
-            return null
+    internal class Raw(
+        private val httpResponse: HttpResponse, 
+        override val bodyContent: String
+    ) : CwHttpResponse.Raw {
+        
+        override val success: Boolean
+            get() = httpResponse.status.isSuccess()
+        
+        override val statusCode: Int
+            get() = httpResponse.status.value
+        
+        override val statusMessage: String
+            get() = httpResponse.status.description
+
+        override fun marshalEmptyResponse(): CwHttpResponse<Void> {
+            return KtorHttpResponse(this, entity = null)
+        }
+
+        override fun <T> marshalResponse(strategy: CwHttpResponse.Raw.() -> T?): CwHttpResponse<T> {
+            val entity = strategy.invoke(this)
+            return KtorHttpResponse(this, entity)
+        }
+
+        override fun <T> marshalResponse(deserializationStrategy: DeserializationStrategy<T>): CwHttpResponse<T> {
+            if (bodyContent.isBlank() || ContentType.Application.Json != httpResponse.contentType()) {
+                return KtorHttpResponse(this, entity = null)
+            }
+
+            val entity = JSON_DESERIALIZER.decodeFromString(deserializationStrategy, bodyContent)
+            return KtorHttpResponse(this, entity)
         }
         
-        val bodyText = httpResponse.bodyAsText()
-        
-        return JSON_DESERIALIZER.decodeFromString(deserializationStrategy, bodyText)
     }
-    
+
     companion object {
         private val JSON_DESERIALIZER = Json { ignoreUnknownKeys = true }
     }
-
 }

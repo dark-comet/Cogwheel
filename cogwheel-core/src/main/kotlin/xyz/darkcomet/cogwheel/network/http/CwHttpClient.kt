@@ -6,7 +6,7 @@ import xyz.darkcomet.cogwheel.impl.models.CwCustomConfiguration
 
 internal interface CwHttpClient {
     
-    suspend fun submit(request: CwHttpRequest): CwHttpResponse
+    suspend fun submit(request: CwHttpRequest): CwHttpResponse.Raw
 
     @FunctionalInterface
     interface Factory {

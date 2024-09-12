@@ -6,14 +6,23 @@ import xyz.darkcomet.cogwheel.network.entities.application.InstallParamsEntity
 
 @Serializable
 data class ModifyCurrentApplicationRequest(
-    @SerialName("custom_install_url") val customInstallUrl: String,
-    val description: String,
-    @SerialName("role_connection_verification_url") val roleConnectionVerificationUrl: String,
-    @SerialName("install_params") val installParams: InstallParamsEntity,
-//    @SerialName("integration_types_config") val integrationTypesConfig: Map<String, String>,
-    val flags: Int,
-    val icon: String?, // image data
-    @SerialName("cover_image") val coverImage: String?, // image data
-    @SerialName("interactions_endpoint_url") val interactionsEndpointUrl: String,
-    val tags: List<String>
-)
+    @SerialName("custom_install_url") var customInstallUrl: String? = null,
+    var description: String? = null,
+    @SerialName("role_connection_verification_url") var roleConnectionVerificationUrl: String? = null,
+    @SerialName("install_params") var installParams: InstallParamsEntity? = null,
+//    @SerialName("integration_types_config") var integrationTypesConfig: Map<String, String>,
+    var flags: Int? = null,
+    var icon: String? = null, // image data
+    @SerialName("cover_image") var coverImage: String? = null, // image data
+    @SerialName("interactions_endpoint_url") var interactionsEndpointUrl: String? = null,
+    var tags: List<String>? = null
+) {
+    companion object {
+        fun create(init: ModifyCurrentApplicationRequest.() -> Unit): ModifyCurrentApplicationRequest {
+            val request = ModifyCurrentApplicationRequest()
+            init.invoke(request)
+            
+            return request
+        }
+    }
+}
