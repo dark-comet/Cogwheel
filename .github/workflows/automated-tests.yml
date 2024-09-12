@@ -1,0 +1,29 @@
+name: Automated Tests
+on: [push]
+jobs:
+  run-automated-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        
+      - name: Set up JDK 8 for x64
+        uses: actions/setup-java@v4
+        with: 
+          java-version: '8'
+          distribution: 'temurin'
+          architecture: x64
+          
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        
+      - name: Unit Test 'cogwheel-core'
+        env:
+          CW_CORE_CI_BOT_TOKEN: ${{ secrets.CW_CORE_CI_BOT_TOKEN }}
+          CW_CORE_CI_OAUTH2_TOKEN: ${{ secrets.CW_CORE_CI_OAUTH2_TOKEN }}
+        run: ./gradlew :cogwheel-core:test
+        
+      - name: Integration Test 'cogwheel-core'
+        env:
+          CW_CORE_CI_BOT_TOKEN: ${{ secrets.CW_CORE_CI_BOT_TOKEN }}
+          CW_CORE_CI_OAUTH2_TOKEN: ${{ secrets.CW_CORE_CI_OAUTH2_TOKEN }}
+        run: ./gradlew :cogwheel-core:testIntegration
