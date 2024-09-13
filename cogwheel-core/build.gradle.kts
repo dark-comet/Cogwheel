@@ -41,6 +41,9 @@ dependencies {
     implementation(libs.ktor.client.okhttp)
     implementation(libs.kotlinx.serialization)
     
+    api(libs.slf4j.api)
+    implementation(libs.slf4j.provider)
+    
     testImplementation(libs.junit.jupiter.engine)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 

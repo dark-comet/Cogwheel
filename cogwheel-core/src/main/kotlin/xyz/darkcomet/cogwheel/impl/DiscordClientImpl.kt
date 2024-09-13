@@ -1,5 +1,7 @@
 package xyz.darkcomet.cogwheel.impl
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import xyz.darkcomet.cogwheel.DiscordClient
 import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
 import xyz.darkcomet.cogwheel.impl.models.CwBaseConfiguration
@@ -16,15 +18,22 @@ internal constructor(
 ) : DiscordClient {
     
     private val configuration: CwBaseConfiguration = CwBaseConfiguration.load()
+    private val logger: Logger = LoggerFactory.getLogger(DiscordClientImpl::class.java)
 
     private val httpClient: CwHttpClient
     private val restApi: RestApiImpl
     
     init {
+        logger.info("DiscordClient initializing... libName={} version={}", configuration.clientName, configuration.clientVersion)
+        
         val configurationOverride = CwCustomConfiguration(clientVersion, clientUrl)
+        logger.trace("Custom metadata: version={}, url={}", configurationOverride.clientVersion, configurationOverride.clientUrl)
         
         httpClient = dependencies.cwHttpClientFactory.create(authenticationMode, configuration, configurationOverride)
+        logger.info("Initialized CwHttpClient: {}", httpClient.javaClass.name)
+        
         restApi = RestApiImpl(httpClient)
+        logger.info("DiscordClient initialized")
     }
     
     override fun restApi(): DiscordClient.RestApi = restApi

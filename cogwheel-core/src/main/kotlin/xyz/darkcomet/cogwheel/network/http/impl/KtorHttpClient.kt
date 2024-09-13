@@ -5,6 +5,8 @@ import io.ktor.client.engine.okhttp.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
 import xyz.darkcomet.cogwheel.impl.models.CwBaseConfiguration
 import xyz.darkcomet.cogwheel.impl.models.CwCustomConfiguration
@@ -12,6 +14,7 @@ import xyz.darkcomet.cogwheel.network.http.CwHttpClient
 import xyz.darkcomet.cogwheel.network.http.CwHttpMethod
 import xyz.darkcomet.cogwheel.network.http.CwHttpRequest
 import xyz.darkcomet.cogwheel.network.http.CwHttpResponse
+import java.util.*
 
 internal class KtorHttpClient(
     private val authenticationMode: AuthenticationMode,
@@ -19,12 +22,15 @@ internal class KtorHttpClient(
     private val configurationOverride: CwCustomConfiguration
 ) : CwHttpClient {
     
+    private val logger: Logger = LoggerFactory.getLogger(KtorHttpClient::class.java)
+    
     private val httpClient: HttpClient
     private val httpClientUserAgentHeaderValue: String
     
     init {
         httpClient = HttpClient(OkHttp)
         httpClientUserAgentHeaderValue = getUserAgentHeaderValue()
+        logger.info("User-Agent: $httpClientUserAgentHeaderValue")
     }
 
     private fun getUserAgentHeaderValue(): String {
@@ -41,11 +47,14 @@ internal class KtorHttpClient(
     }
 
     override suspend fun submit(request: CwHttpRequest): CwHttpResponse.Raw {
-    
         val endpointUrl = getEndpointUrl(request.endpointPath)
         
         val contentType = if (request.bodyContent != null) ContentType.Application.Json else ContentType.Any
-        val bodyContent = request.bodyContent ?: ""
+        val requestBody = request.bodyContent ?: ""
+        
+        val requestId = UUID.randomUUID()
+        
+        logger.debug("Submitting HttpRequest: id={}, {} {}, bodyContent={}", requestId, request.method, endpointUrl, requestBody)
         
         val httpResponse = httpClient.request(endpointUrl) {
             method = getHttpMethod(request.method)
@@ -60,12 +69,14 @@ internal class KtorHttpClient(
             }
             
             contentType(contentType)
-            setBody(bodyContent)
+            setBody(requestBody)
         }
+        
+        val responseBody = httpResponse.bodyAsText()
 
-        val contentBody = httpResponse.bodyAsText()
+        logger.debug("Received HttpResponse for id={}, {}, bodyContent={}", requestId, httpResponse.toString(), responseBody)
 
-        return KtorHttpResponse.Raw(httpResponse, contentBody)
+        return KtorHttpResponse.Raw(httpResponse, responseBody)
     }
     
     private fun getEndpointUrl(endpointUrl: String): String {

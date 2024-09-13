@@ -4,6 +4,8 @@ junit-jupiter-engine = "5.10.2"
 junit-jupiter-api = "5.11.0"
 ktor-client = "2.3.12"
 kotlinx-serialization = "1.7.2"
+slf4j-api = "2.0.16"
+slf4j-reload4j = "2.0.16"
 
 [libraries]
 ktor-client-core = { module = "io.ktor:ktor-client-core-jvm", version.ref = "ktor-client" }
@@ -12,6 +14,8 @@ kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter-api" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter-engine" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
+slf4j-provider = { module = "org.slf4j:slf4j-reload4j", version.ref = "slf4j-reload4j" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "1.9.23" }
