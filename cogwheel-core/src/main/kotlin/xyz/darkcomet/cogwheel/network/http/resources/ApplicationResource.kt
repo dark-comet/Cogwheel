@@ -1,6 +1,6 @@
 package xyz.darkcomet.cogwheel.network.http.resources
 
-import xyz.darkcomet.cogwheel.network.entities.application.ApplicationEntity
+import xyz.darkcomet.cogwheel.network.entities.ApplicationEntity
 import xyz.darkcomet.cogwheel.network.http.CwHttpClient
 import xyz.darkcomet.cogwheel.network.http.CwHttpMethod
 import xyz.darkcomet.cogwheel.network.http.CwHttpRequest

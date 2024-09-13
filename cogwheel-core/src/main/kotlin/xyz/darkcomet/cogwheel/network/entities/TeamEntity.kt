@@ -1,6 +1,5 @@
-package xyz.darkcomet.cogwheel.network.entities.application
+package xyz.darkcomet.cogwheel.network.entities
 
-import kotlinx.serialization.Required
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import xyz.darkcomet.cogwheel.models.Snowflake
@@ -9,7 +8,7 @@ import xyz.darkcomet.cogwheel.models.Snowflake
 data class TeamEntity(
     val icon: String?,
     val id: Snowflake,
-    val members: List<xyz.darkcomet.cogwheel.network.entities.application.TeamMemberEntity>,
+    val members: List<TeamMemberEntity>,
     val name: String,
     @SerialName("owner_user_id") val ownerUserId: Snowflake,
 )

@@ -2,7 +2,7 @@ package xyz.darkcomet.cogwheel.network.http.requests.application
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import xyz.darkcomet.cogwheel.network.entities.application.InstallParamsEntity
+import xyz.darkcomet.cogwheel.network.entities.InstallParamsEntity
 
 @Serializable
 data class ModifyCurrentApplicationRequest(

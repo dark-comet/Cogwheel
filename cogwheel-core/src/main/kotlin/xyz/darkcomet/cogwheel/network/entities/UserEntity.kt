@@ -1,6 +1,5 @@
-package xyz.darkcomet.cogwheel.network.entities.user
+package xyz.darkcomet.cogwheel.network.entities
 
-import kotlinx.serialization.Required
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import xyz.darkcomet.cogwheel.models.Snowflake

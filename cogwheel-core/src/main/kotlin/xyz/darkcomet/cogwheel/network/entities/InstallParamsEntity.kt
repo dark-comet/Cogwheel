@@ -1,6 +1,5 @@
-package xyz.darkcomet.cogwheel.network.entities.application
+package xyz.darkcomet.cogwheel.network.entities
 
-import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
 @Serializable
