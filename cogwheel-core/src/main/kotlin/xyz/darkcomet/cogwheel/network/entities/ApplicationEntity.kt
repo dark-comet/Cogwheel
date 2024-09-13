@@ -31,8 +31,8 @@ data class ApplicationEntity(
     @SerialName("interactions_endpoint_url") val interactionsEndpointUrl: String? = null,
     @SerialName("role_connections_verification_url") val roleConnectionsVerificationUrl: String? = null,
     val tags: List<String>? = null,
-    @SerialName("install_params") val installParams: InstallParamsEntity? = null,
-//    @SerialName("integration_types_config") val integrationTypesConfig: Map<String, String>? = null,
+    @SerialName("install_params") val installParams: ApplicationInstallParamsEntity? = null,
+    @SerialName("integration_types_config") val integrationTypesConfig: Map<String, ApplicationIntegrationTypeConfigurationEntity>? = null,
     @SerialName("custom_install_url") val customInstallUrl: String? = null,
 ) {
 }

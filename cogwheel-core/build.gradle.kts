@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Path
+
 plugins {
     idea
     alias(libs.plugins.kotlin.jvm)
@@ -70,13 +73,36 @@ val testIntegration = task<Test>("testIntegration") {
     
     testClassesDirs = sourceSets["testIntegration"].output.classesDirs
     classpath = sourceSets["testIntegration"].runtimeClasspath
-    
+
+    val localBotTokensFile = project.file("testSecrets.txt").toPath()
+    if (Files.exists(localBotTokensFile)) {
+        loadLocalBotTokensIfApplicable(this, localBotTokensFile)
+    }
+
     shouldRunAfter("test")
     
     useJUnitPlatform()
     
     testLogging {
         events("passed")
+    }
+}
+
+fun loadLocalBotTokensIfApplicable(test: Test, localBotTokensFile: Path) {
+    /* Keys defined in testIntegration: TestDiscordClient class */
+    val botTokenKey = "CW_CORE_CI_BOT_TOKEN"
+    val oauth2TokenKey = "CW_CORE_CI_OAUTH2_TOKEN"
+    
+    val localTokens = Files.readAllLines(localBotTokensFile)
+    val localBotToken = localTokens[0].replace("$botTokenKey=", "").trim()
+    val localOAuth2Token = localTokens[1].replace("$oauth2TokenKey=", "").trim()
+
+    if (localBotToken.isNotBlank()) {
+        test.environment(botTokenKey, localBotToken)
+    }
+
+    if (localOAuth2Token.isNotBlank()) {
+        test.environment(oauth2TokenKey, localOAuth2Token)
     }
 }
 
