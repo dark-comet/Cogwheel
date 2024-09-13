@@ -3,9 +3,9 @@ package xyz.darkcomet.cogwheel
 import kotlinx.coroutines.runBlocking
 import xyz.darkcomet.cogwheel.events.Event
 import xyz.darkcomet.cogwheel.events.InteractionCreateEvent
-import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
-import xyz.darkcomet.cogwheel.impl.authentication.BotTokenAuthenticationMode
-import xyz.darkcomet.cogwheel.impl.authentication.OAuth2BearerAuthenticationMode
+import xyz.darkcomet.cogwheel.impl.authentication.Token
+import xyz.darkcomet.cogwheel.impl.authentication.BotToken
+import xyz.darkcomet.cogwheel.impl.authentication.OAuth2Token
 import xyz.darkcomet.cogwheel.network.http.api.*
 
 interface DiscordClient {
@@ -53,17 +53,17 @@ interface DiscordClient {
     
     companion object {
         fun fromBotToken(token: String, init: (DiscordClientBuilder.() -> Unit)? = null): DiscordClient {
-            val authMode = BotTokenAuthenticationMode(token)
-            return build(authMode, init)
+            val token = BotToken(token)
+            return build(token, init)
         }
 
         fun fromOAuth2Token(token: String, init: (DiscordClientBuilder.() -> Unit)? = null): DiscordClient {
-            val authMode = OAuth2BearerAuthenticationMode(token)
-            return build(authMode, init);
+            val token = OAuth2Token(token)
+            return build(token, init);
         }
 
-        private fun build(authMode: AuthenticationMode, init: (DiscordClientBuilder.() -> Unit)? = null): DiscordClient {
-            val builder = DiscordClientBuilder(authMode)
+        private fun build(token: Token, init: (DiscordClientBuilder.() -> Unit)? = null): DiscordClient {
+            val builder = DiscordClientBuilder(token)
             init?.invoke(builder)
 
             val client = builder.build()

@@ -4,17 +4,15 @@ import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.http.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import okhttp3.OkHttpClient
-import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
+import xyz.darkcomet.cogwheel.impl.authentication.Token
 import xyz.darkcomet.cogwheel.models.Intents
 import xyz.darkcomet.cogwheel.network.gateway.CwGatewayClient
 import java.util.concurrent.TimeUnit
 
 class KtorGatewayClient 
 private constructor(
-    private val authMode: AuthenticationMode, 
+    private val token: Token,
     private val intents: Intents
 ) : CwGatewayClient {
 
@@ -46,8 +44,8 @@ private constructor(
     }
     
     class Factory : CwGatewayClient.Factory {
-        override fun create(authMode: AuthenticationMode, intents: Intents): CwGatewayClient {
-            return KtorGatewayClient(authMode, intents)
+        override fun create(token: Token, intents: Intents): CwGatewayClient {
+            return KtorGatewayClient(token, intents)
         }
 
     }

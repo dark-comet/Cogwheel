@@ -1,6 +1,6 @@
 package xyz.darkcomet.cogwheel.impl.authentication
 
-interface AuthenticationMode {
+interface Token {
     
     fun getAuthorizationHeaderValue(): String
     

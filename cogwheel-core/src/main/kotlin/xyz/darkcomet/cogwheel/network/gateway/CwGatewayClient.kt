@@ -1,6 +1,6 @@
 package xyz.darkcomet.cogwheel.network.gateway
 
-import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
+import xyz.darkcomet.cogwheel.impl.authentication.Token
 import xyz.darkcomet.cogwheel.models.Intents
 
 interface CwGatewayClient {
@@ -9,6 +9,6 @@ interface CwGatewayClient {
 
     @FunctionalInterface
     interface Factory {
-        fun create(authMode: AuthenticationMode, intents: Intents): CwGatewayClient
+        fun create(token: Token, intents: Intents): CwGatewayClient
     }
 }

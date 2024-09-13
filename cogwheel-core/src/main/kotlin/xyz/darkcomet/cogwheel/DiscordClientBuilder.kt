@@ -2,12 +2,12 @@ package xyz.darkcomet.cogwheel
 
 import xyz.darkcomet.cogwheel.impl.DiscordClientImpl
 import xyz.darkcomet.cogwheel.impl.DiscordClientSettings
-import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
+import xyz.darkcomet.cogwheel.impl.authentication.Token
 import xyz.darkcomet.cogwheel.models.Intents
 import xyz.darkcomet.cogwheel.network.http.CwHttpClient
 
 class DiscordClientBuilder 
-internal constructor(private val authenticationMode: AuthenticationMode) {
+internal constructor(private val token: Token) {
     
     var clientVersion: String?
         get() = settings.customClientVersion
@@ -21,7 +21,7 @@ internal constructor(private val authenticationMode: AuthenticationMode) {
         get() = settings.cwHttpClientFactory
         set(value) { settings.cwHttpClientFactory = value }
     
-    private val settings = DiscordClientSettings(authenticationMode)
+    private val settings = DiscordClientSettings(token)
     
     fun useGateway(intents: Intents) {
         settings.gatewayEnabled = true

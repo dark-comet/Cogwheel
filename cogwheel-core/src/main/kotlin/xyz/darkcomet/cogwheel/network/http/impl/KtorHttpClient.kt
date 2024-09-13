@@ -73,7 +73,7 @@ internal class KtorHttpClient(
             }
             
             headers {
-                append(HttpHeaders.Authorization, settings.authMode.getAuthorizationHeaderValue())
+                append(HttpHeaders.Authorization, settings.token.getAuthorizationHeaderValue())
                 append(HttpHeaders.UserAgent, httpClientUserAgentHeaderValue)
             }
             

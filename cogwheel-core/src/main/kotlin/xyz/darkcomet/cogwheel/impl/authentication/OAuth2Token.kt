@@ -1,9 +1,9 @@
 package xyz.darkcomet.cogwheel.impl.authentication
 
-internal class BotTokenAuthenticationMode(private val token: String) : AuthenticationMode {
+internal class OAuth2Token(private val token: String) : Token {
     
     override fun getAuthorizationHeaderValue(): String {
-        return "Bot $token"
+        return "Bearer $token"
     }
-
+    
 }

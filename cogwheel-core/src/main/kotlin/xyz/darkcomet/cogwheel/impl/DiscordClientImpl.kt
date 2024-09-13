@@ -30,7 +30,7 @@ internal constructor(settings: DiscordClientSettings) : DiscordClient {
         logger.info("Initialized CwHttpClient: {}", restClient.javaClass.name)
 
         gatewayClient = if (settings.gatewayEnabled) {
-            settings.cwGatewayClientFactory.create(settings.authMode, settings.gatewayIntents)
+            settings.cwGatewayClientFactory.create(settings.token, settings.gatewayIntents)
         } else null
         
         restApi = ClientRestApiImpl(restClient)
