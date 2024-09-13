@@ -1,8 +1,8 @@
-package xyz.darkcomet.cogwheel.network.http.resources
+package xyz.darkcomet.cogwheel.network.http.api
 
 import xyz.darkcomet.cogwheel.network.http.CwHttpClient
 
-class AutoModerationResource internal constructor(httpClient: CwHttpClient) {
+class AutoModerationApi internal constructor(httpClient: CwHttpClient) {
 
 //    fun listAutoModerationRules(guildId: Snowflake): CwHttpResponse {
 //        TODO("Not implemented yet")

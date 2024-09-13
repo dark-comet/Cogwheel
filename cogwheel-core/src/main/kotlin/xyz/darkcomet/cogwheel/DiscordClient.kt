@@ -3,34 +3,33 @@ package xyz.darkcomet.cogwheel
 import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
 import xyz.darkcomet.cogwheel.impl.authentication.BotTokenAuthenticationMode
 import xyz.darkcomet.cogwheel.impl.authentication.OAuth2BearerAuthenticationMode
-import xyz.darkcomet.cogwheel.network.http.CwHttpClient
-import xyz.darkcomet.cogwheel.network.http.resources.*
+import xyz.darkcomet.cogwheel.network.http.api.*
 
 interface DiscordClient {
     
     fun restApi() : RestApi
     
     interface RestApi {
-        fun application(): ApplicationResource
-        fun applicationRoleConnectionMetadata(): ApplicationRoleConnectionMetadataResource
-        fun auditLog(): AuditLogResource
-        fun autoModeration(): AutoModerationResource
-        fun channel(): ChannelResource
-        fun emoji(): EmojiResource
-        fun entitlement(): EntitlementResource
-        fun guild(): GuildResource
-        fun guildScheduledEvent(): GuildScheduledEventResource
-        fun guildTemplateResource(): GuildTemplateResource
-        fun inviteResource(): InviteResource
-        fun message(): MessageResource
-        fun poll(): PollResource
-        fun sku(): SkuResource
-        fun stageInstance(): StageInstanceResource
-        fun sticker(): StickerResource
-        fun subscription(): SubscriptionResource
-        fun user(): UserResource
-        fun voice(): VoiceResource
-        fun webhook(): WebhookResource
+        fun application(): ApplicationApi
+        fun applicationRoleConnectionMetadata(): ApplicationRoleConnectionMetadataApi
+        fun auditLog(): AuditLogApi
+        fun autoModeration(): AutoModerationApi
+        fun channel(): ChannelApi
+        fun emoji(): EmojiApi
+        fun entitlement(): EntitlementApi
+        fun guild(): GuildApi
+        fun guildScheduledEvent(): GuildScheduledEventApi
+        fun guildTemplate(): GuildTemplateApi
+        fun invite(): InviteApi
+        fun message(): MessageApi
+        fun poll(): PollApi
+        fun sku(): SkuApi
+        fun stageInstance(): StageInstanceApi
+        fun sticker(): StickerApi
+        fun subscription(): SubscriptionApi
+        fun user(): UserApi
+        fun voice(): VoiceApi
+        fun webhook(): WebhookApi
     }
     
     companion object {

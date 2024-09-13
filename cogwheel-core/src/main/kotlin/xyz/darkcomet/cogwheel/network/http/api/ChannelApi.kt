@@ -1,8 +1,8 @@
-package xyz.darkcomet.cogwheel.network.http.resources
+package xyz.darkcomet.cogwheel.network.http.api
 
 import xyz.darkcomet.cogwheel.network.http.CwHttpClient
 
-class ChannelResource 
+class ChannelApi 
 internal constructor(private val httpClient: CwHttpClient) {
     
 //    fun getChannel(channelId: Snowflake): CwHttpResponse {

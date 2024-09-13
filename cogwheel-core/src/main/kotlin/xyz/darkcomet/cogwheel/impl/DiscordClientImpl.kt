@@ -7,7 +7,7 @@ import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
 import xyz.darkcomet.cogwheel.impl.models.CwBaseConfiguration
 import xyz.darkcomet.cogwheel.impl.models.CwCustomConfiguration
 import xyz.darkcomet.cogwheel.network.http.CwHttpClient
-import xyz.darkcomet.cogwheel.network.http.resources.*
+import xyz.darkcomet.cogwheel.network.http.api.*
 
 internal open class DiscordClientImpl 
 internal constructor(
@@ -41,46 +41,46 @@ internal constructor(
     
     internal class RestApiImpl(httpClient: CwHttpClient) : DiscordClient.RestApi {
         
-        private val applicationResource: ApplicationResource = ApplicationResource(httpClient)
-        private val applicationRoleConnectionMetadataResource: ApplicationRoleConnectionMetadataResource = ApplicationRoleConnectionMetadataResource(httpClient)
-        private val auditLogResource: AuditLogResource = AuditLogResource(httpClient)
-        private val autoModerationResource: AutoModerationResource = AutoModerationResource(httpClient)
-        private val channelResource: ChannelResource = ChannelResource(httpClient)
-        private val emojiResource: EmojiResource = EmojiResource(httpClient)
-        private val entitlementResource: EntitlementResource = EntitlementResource(httpClient)
-        private val guildResource: GuildResource = GuildResource(httpClient)
-        private val guildScheduledEventResource: GuildScheduledEventResource = GuildScheduledEventResource(httpClient)
-        private val guildTemplateResource: GuildTemplateResource = GuildTemplateResource(httpClient)
-        private val inviteResource: InviteResource = InviteResource(httpClient)
-        private val messageResource: MessageResource = MessageResource(httpClient)
-        private val pollResource: PollResource = PollResource(httpClient)
-        private val skuResource: SkuResource = SkuResource(httpClient)
-        private val stageInstanceResource: StageInstanceResource = StageInstanceResource(httpClient)
-        private val stickerResource: StickerResource = StickerResource(httpClient)
-        private val subscriptionResource: SubscriptionResource = SubscriptionResource(httpClient)
-        private val userResource: UserResource = UserResource(httpClient)
-        private val voiceResource: VoiceResource = VoiceResource(httpClient)
-        private val webhookResource: WebhookResource = WebhookResource(httpClient)
+        private val applicationApi: ApplicationApi = ApplicationApi(httpClient)
+        private val applicationRoleConnectionMetadataApi: ApplicationRoleConnectionMetadataApi = ApplicationRoleConnectionMetadataApi(httpClient)
+        private val auditLogApi: AuditLogApi = AuditLogApi(httpClient)
+        private val autoModerationApi: AutoModerationApi = AutoModerationApi(httpClient)
+        private val channelApi: ChannelApi = ChannelApi(httpClient)
+        private val emojiApi: EmojiApi = EmojiApi(httpClient)
+        private val entitlementApi: EntitlementApi = EntitlementApi(httpClient)
+        private val guildAPi: GuildApi = GuildApi(httpClient)
+        private val guildScheduledEventApi: GuildScheduledEventApi = GuildScheduledEventApi(httpClient)
+        private val guildTemplateApi: GuildTemplateApi = GuildTemplateApi(httpClient)
+        private val inviteApi: InviteApi = InviteApi(httpClient)
+        private val messageApi: MessageApi = MessageApi(httpClient)
+        private val pollApi: PollApi = PollApi(httpClient)
+        private val skuApi: SkuApi = SkuApi(httpClient)
+        private val stageInstanceApi: StageInstanceApi = StageInstanceApi(httpClient)
+        private val stickerApi: StickerApi = StickerApi(httpClient)
+        private val subscriptionApi: SubscriptionApi = SubscriptionApi(httpClient)
+        private val userAPi: UserApi = UserApi(httpClient)
+        private val voiceApi: VoiceApi = VoiceApi(httpClient)
+        private val webhookApi: WebhookApi = WebhookApi(httpClient)
 
-        override fun application(): ApplicationResource = applicationResource
-        override fun applicationRoleConnectionMetadata(): ApplicationRoleConnectionMetadataResource = applicationRoleConnectionMetadataResource
-        override fun auditLog(): AuditLogResource = auditLogResource
-        override fun autoModeration(): AutoModerationResource = autoModerationResource
-        override fun channel(): ChannelResource = channelResource
-        override fun emoji(): EmojiResource = emojiResource
-        override fun entitlement(): EntitlementResource = entitlementResource
-        override fun guild(): GuildResource = guildResource
-        override fun guildScheduledEvent(): GuildScheduledEventResource = guildScheduledEventResource
-        override fun guildTemplateResource(): GuildTemplateResource = guildTemplateResource
-        override fun inviteResource(): InviteResource = inviteResource
-        override fun message(): MessageResource = messageResource
-        override fun poll(): PollResource = pollResource
-        override fun sku(): SkuResource = skuResource
-        override fun stageInstance(): StageInstanceResource = stageInstanceResource
-        override fun sticker(): StickerResource = stickerResource
-        override fun subscription(): SubscriptionResource = subscriptionResource
-        override fun user(): UserResource = userResource
-        override fun voice(): VoiceResource = voiceResource
-        override fun webhook(): WebhookResource = webhookResource
+        override fun application(): ApplicationApi = applicationApi
+        override fun applicationRoleConnectionMetadata(): ApplicationRoleConnectionMetadataApi = applicationRoleConnectionMetadataApi
+        override fun auditLog(): AuditLogApi = auditLogApi
+        override fun autoModeration(): AutoModerationApi = autoModerationApi
+        override fun channel(): ChannelApi = channelApi
+        override fun emoji(): EmojiApi = emojiApi
+        override fun entitlement(): EntitlementApi = entitlementApi
+        override fun guild(): GuildApi = guildAPi
+        override fun guildScheduledEvent(): GuildScheduledEventApi = guildScheduledEventApi
+        override fun guildTemplate(): GuildTemplateApi = guildTemplateApi
+        override fun invite(): InviteApi = inviteApi
+        override fun message(): MessageApi = messageApi
+        override fun poll(): PollApi = pollApi
+        override fun sku(): SkuApi = skuApi
+        override fun stageInstance(): StageInstanceApi = stageInstanceApi
+        override fun sticker(): StickerApi = stickerApi
+        override fun subscription(): SubscriptionApi = subscriptionApi
+        override fun user(): UserApi = userAPi
+        override fun voice(): VoiceApi = voiceApi
+        override fun webhook(): WebhookApi = webhookApi
     }
 }

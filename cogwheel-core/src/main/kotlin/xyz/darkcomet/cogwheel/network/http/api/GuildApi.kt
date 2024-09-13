@@ -1,11 +1,8 @@
-package xyz.darkcomet.cogwheel.network.http.resources
+package xyz.darkcomet.cogwheel.network.http.api
 
-import xyz.darkcomet.cogwheel.models.Snowflake
 import xyz.darkcomet.cogwheel.network.http.CwHttpClient
-import xyz.darkcomet.cogwheel.network.http.CwHttpResponse
-import xyz.darkcomet.cogwheel.network.http.requests.guild.*
 
-class GuildResource
+class GuildApi
 internal constructor(private val httpClient: CwHttpClient) {
     
 //    fun create(request: CreateGuildRequest): CwHttpResponse {

@@ -1,4 +1,4 @@
-package xyz.darkcomet.cogwheel.network.http.resources
+package xyz.darkcomet.cogwheel.network.http.api
 
 import xyz.darkcomet.cogwheel.network.entities.ApplicationEntity
 import xyz.darkcomet.cogwheel.network.http.CwHttpClient
@@ -7,7 +7,7 @@ import xyz.darkcomet.cogwheel.network.http.CwHttpRequest
 import xyz.darkcomet.cogwheel.network.http.CwHttpResponse
 import xyz.darkcomet.cogwheel.network.http.requests.application.ModifyCurrentApplicationRequest
 
-class ApplicationResource
+class ApplicationApi
 internal constructor(private val httpClient: CwHttpClient) {
     
     suspend fun getCurrent(): CwHttpResponse<ApplicationEntity?> {
