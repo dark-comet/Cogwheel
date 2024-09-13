@@ -2,24 +2,25 @@ package xyz.darkcomet.cogwheel.network.http.impl
 
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
+import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import okhttp3.OkHttpClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
-import xyz.darkcomet.cogwheel.impl.models.CwBaseConfiguration
-import xyz.darkcomet.cogwheel.impl.models.CwCustomConfiguration
+import xyz.darkcomet.cogwheel.impl.DiscordClientSettings
+import xyz.darkcomet.cogwheel.impl.models.CwConfiguration
 import xyz.darkcomet.cogwheel.network.http.CwHttpClient
 import xyz.darkcomet.cogwheel.network.http.CwHttpMethod
 import xyz.darkcomet.cogwheel.network.http.CwHttpRequest
 import xyz.darkcomet.cogwheel.network.http.CwHttpResponse
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 internal class KtorHttpClient(
-    private val authenticationMode: AuthenticationMode,
-    private val configuration: CwBaseConfiguration,
-    private val configurationOverride: CwCustomConfiguration
+    private val settings: DiscordClientSettings,
+    private val config: CwConfiguration
 ) : CwHttpClient {
     
     private val logger: Logger = LoggerFactory.getLogger(KtorHttpClient::class.java)
@@ -28,25 +29,33 @@ internal class KtorHttpClient(
     private val httpClientUserAgentHeaderValue: String
     
     init {
-        httpClient = HttpClient(OkHttp)
+        httpClient = HttpClient(OkHttp) {
+            if (settings.gatewayEnabled) {
+                engine {
+                    // TODO: Work out the specifics
+                    preconfigured = OkHttpClient.Builder().pingInterval(20, TimeUnit.SECONDS).build()
+                }
+            }
+        }
+        
         httpClientUserAgentHeaderValue = getUserAgentHeaderValue()
         logger.info("User-Agent: $httpClientUserAgentHeaderValue")
     }
 
     private fun getUserAgentHeaderValue(): String {
         // Hard-coded values for this library
-        val libName = configuration.clientName
-        val libVersion = configuration.clientVersion
-        val libUrl = configuration.clientUrl
+        val libName = config.clientName
+        val libVersion = config.clientVersion
+        val libUrl = config.clientUrl
 
         // Specific to client project settings
-        val officialUrl = configurationOverride.clientUrl ?: libUrl
-        val officialVersion = configurationOverride.clientVersion ?: libVersion
+        val officialUrl = settings.customClientUrl ?: libUrl
+        val officialVersion = settings.customClientVersion ?: libVersion
 
         return "DiscordBot ($officialUrl, $officialVersion) $libName/$libVersion"
     }
 
-    override suspend fun submit(request: CwHttpRequest): CwHttpResponse.Raw {
+    override suspend fun submitHttp(request: CwHttpRequest): CwHttpResponse.Raw {
         val endpointUrl = getEndpointUrl(request.endpointPath)
         
         val contentType = if (request.bodyContent != null) ContentType.Application.Json else ContentType.Any
@@ -64,7 +73,7 @@ internal class KtorHttpClient(
             }
             
             headers {
-                append(HttpHeaders.Authorization, authenticationMode.getAuthorizationHeaderValue())
+                append(HttpHeaders.Authorization, settings.authMode.getAuthorizationHeaderValue())
                 append(HttpHeaders.UserAgent, httpClientUserAgentHeaderValue)
             }
             
@@ -80,17 +89,17 @@ internal class KtorHttpClient(
     }
     
     private fun getEndpointUrl(endpointUrl: String): String {
-        var url = configuration.discordApiUrl
+        var url = config.discordApiUrl
         
         if (url.endsWith("/")) {
             url = url.substring(0, url.length - 1)
         }
 
-        url += "/v${configuration.discordApiVersion}${endpointUrl}"
+        url += "/v${config.discordApiVersion}${endpointUrl}"
         
         return url
     }
-
+    
     private fun getHttpMethod(request: CwHttpMethod): HttpMethod {
         return when (request) {
             CwHttpMethod.GET -> HttpMethod.Get
@@ -102,12 +111,8 @@ internal class KtorHttpClient(
     }
 
     internal class Factory : CwHttpClient.Factory {
-        override fun create(
-            authMode: AuthenticationMode,
-            configBase: CwBaseConfiguration,
-            configCustom: CwCustomConfiguration
-        ): CwHttpClient {
-            return KtorHttpClient(authMode, configBase, configCustom)
+        override fun create(settings: DiscordClientSettings, config: CwConfiguration): CwHttpClient {
+            return KtorHttpClient(settings, config)
         }
     }
 }

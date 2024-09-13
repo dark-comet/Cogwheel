@@ -3,64 +3,78 @@ package xyz.darkcomet.cogwheel.impl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import xyz.darkcomet.cogwheel.DiscordClient
-import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
-import xyz.darkcomet.cogwheel.impl.models.CwBaseConfiguration
-import xyz.darkcomet.cogwheel.impl.models.CwCustomConfiguration
+import xyz.darkcomet.cogwheel.events.Event
+import xyz.darkcomet.cogwheel.events.InteractionCreateEvent
+import xyz.darkcomet.cogwheel.impl.models.CwConfiguration
+import xyz.darkcomet.cogwheel.network.gateway.CwGatewayClient
 import xyz.darkcomet.cogwheel.network.http.CwHttpClient
 import xyz.darkcomet.cogwheel.network.http.api.*
 
 internal open class DiscordClientImpl 
-internal constructor(
-    dependencies: DiscordClientDependencies,
-    authenticationMode: AuthenticationMode,
-    clientVersion: String?,
-    clientUrl: String?
-) : DiscordClient {
+internal constructor(settings: DiscordClientSettings) : DiscordClient {
     
-    private val configuration: CwBaseConfiguration = CwBaseConfiguration.load()
+    private val config: CwConfiguration = CwConfiguration.load()
     private val logger: Logger = LoggerFactory.getLogger(DiscordClientImpl::class.java)
 
-    private val httpClient: CwHttpClient
-    private val restApi: RestApiImpl
+    private val restClient: CwHttpClient
+    private val gatewayClient: CwGatewayClient?
+    
+    private val restApi: DiscordClient.ClientRestApi
+    private val gatewayApi: DiscordClient.ClientGatewayApi
+    private val clientEventManager: DiscordClient.ClientEventManager
     
     init {
-        logger.info("DiscordClient initializing... libName={} version={}", configuration.clientName, configuration.clientVersion)
+        logger.info("{} v{} initializing...", config.clientName, config.clientVersion)
         
-        val configurationOverride = CwCustomConfiguration(clientVersion, clientUrl)
-        logger.trace("Custom metadata: version={}, url={}", configurationOverride.clientVersion, configurationOverride.clientUrl)
+        restClient = settings.cwHttpClientFactory.create(settings, config)
+        logger.info("Initialized CwHttpClient: {}", restClient.javaClass.name)
+
+        gatewayClient = if (settings.gatewayEnabled) {
+            settings.cwGatewayClientFactory.create(settings.authMode, settings.gatewayIntents)
+        } else null
         
-        httpClient = dependencies.cwHttpClientFactory.create(authenticationMode, configuration, configurationOverride)
-        logger.info("Initialized CwHttpClient: {}", httpClient.javaClass.name)
-        
-        restApi = RestApiImpl(httpClient)
+        restApi = ClientRestApiImpl(restClient)
+        gatewayApi = ClientGatewayApiImpl(gatewayClient)
+        clientEventManager = ClientEventManagerImpl()
         logger.info("DiscordClient initialized")
     }
-    
-    override fun restApi(): DiscordClient.RestApi = restApi
-    
-    
-    internal class RestApiImpl(httpClient: CwHttpClient) : DiscordClient.RestApi {
+
+    override suspend fun startGatewayConnection() {
+        if (gatewayClient == null) {
+            throw IllegalStateException("gatewayClient not initialized! Build DiscordClient using withGateway() first.")
+        }
         
-        private val applicationApi: ApplicationApi = ApplicationApi(httpClient)
-        private val applicationRoleConnectionMetadataApi: ApplicationRoleConnectionMetadataApi = ApplicationRoleConnectionMetadataApi(httpClient)
-        private val auditLogApi: AuditLogApi = AuditLogApi(httpClient)
-        private val autoModerationApi: AutoModerationApi = AutoModerationApi(httpClient)
-        private val channelApi: ChannelApi = ChannelApi(httpClient)
-        private val emojiApi: EmojiApi = EmojiApi(httpClient)
-        private val entitlementApi: EntitlementApi = EntitlementApi(httpClient)
-        private val guildAPi: GuildApi = GuildApi(httpClient)
-        private val guildScheduledEventApi: GuildScheduledEventApi = GuildScheduledEventApi(httpClient)
-        private val guildTemplateApi: GuildTemplateApi = GuildTemplateApi(httpClient)
-        private val inviteApi: InviteApi = InviteApi(httpClient)
-        private val messageApi: MessageApi = MessageApi(httpClient)
-        private val pollApi: PollApi = PollApi(httpClient)
-        private val skuApi: SkuApi = SkuApi(httpClient)
-        private val stageInstanceApi: StageInstanceApi = StageInstanceApi(httpClient)
-        private val stickerApi: StickerApi = StickerApi(httpClient)
-        private val subscriptionApi: SubscriptionApi = SubscriptionApi(httpClient)
-        private val userAPi: UserApi = UserApi(httpClient)
-        private val voiceApi: VoiceApi = VoiceApi(httpClient)
-        private val webhookApi: WebhookApi = WebhookApi(httpClient)
+        gatewayClient.startGatewayConnection {
+            restApi().gateway().get().entity!!.url
+        }
+    }
+
+    override fun restApi(): DiscordClient.ClientRestApi = restApi
+    override fun gatewayApi(): DiscordClient.ClientGatewayApi = gatewayApi
+    override fun events(): DiscordClient.ClientEventManager = clientEventManager
+    
+    internal class ClientRestApiImpl(client: CwHttpClient) : DiscordClient.ClientRestApi {
+        private val applicationApi = ApplicationApi(client)
+        private val applicationRoleConnectionMetadataApi = ApplicationRoleConnectionMetadataApi(client)
+        private val auditLogApi = AuditLogApi(client)
+        private val autoModerationApi = AutoModerationApi(client)
+        private val channelApi = ChannelApi(client)
+        private val emojiApi = EmojiApi(client)
+        private val entitlementApi = EntitlementApi(client)
+        private val gatewayApi = GatewayApi(client)
+        private val guildApi = GuildApi(client)
+        private val guildScheduledEventApi = GuildScheduledEventApi(client)
+        private val guildTemplateApi = GuildTemplateApi(client)
+        private val inviteApi = InviteApi(client)
+        private val messageApi = MessageApi(client)
+        private val pollApi = PollApi(client)
+        private val skuApi = SkuApi(client)
+        private val stageInstanceApi = StageInstanceApi(client)
+        private val stickerApi = StickerApi(client)
+        private val subscriptionApi = SubscriptionApi(client)
+        private val userAPi = UserApi(client)
+        private val voiceApi = VoiceApi(client)
+        private val webhookApi = WebhookApi(client)
 
         override fun application(): ApplicationApi = applicationApi
         override fun applicationRoleConnectionMetadata(): ApplicationRoleConnectionMetadataApi = applicationRoleConnectionMetadataApi
@@ -69,7 +83,8 @@ internal constructor(
         override fun channel(): ChannelApi = channelApi
         override fun emoji(): EmojiApi = emojiApi
         override fun entitlement(): EntitlementApi = entitlementApi
-        override fun guild(): GuildApi = guildAPi
+        override fun gateway(): GatewayApi = gatewayApi
+        override fun guild(): GuildApi = guildApi
         override fun guildScheduledEvent(): GuildScheduledEventApi = guildScheduledEventApi
         override fun guildTemplate(): GuildTemplateApi = guildTemplateApi
         override fun invite(): InviteApi = inviteApi
@@ -82,5 +97,33 @@ internal constructor(
         override fun user(): UserApi = userAPi
         override fun voice(): VoiceApi = voiceApi
         override fun webhook(): WebhookApi = webhookApi
+    }
+    
+    internal class ClientGatewayApiImpl(client: CwGatewayClient?) : DiscordClient.ClientGatewayApi {
+        override fun requestGuildMembers() {
+            TODO("Not yet implemented")
+        }
+
+        override fun updateVoiceState() {
+            TODO("Not yet implemented")
+        }
+
+        override fun updatePresence() {
+            TODO("Not yet implemented")
+        }
+    }
+    
+    internal class ClientEventManagerImpl : DiscordClient.ClientEventManager {
+        override fun <T : Event> subscribe(handler: DiscordClient.(T) -> Unit) {
+            TODO("Not yet implemented")
+        }
+
+        override fun fireInteractionCreate(event: InteractionCreateEvent) {
+            TODO("Not yet implemented")
+        }
+        
+        internal fun fire(event: Event) {
+            TODO("Not yet implemented")
+        }
     }
 }

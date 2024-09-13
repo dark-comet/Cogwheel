@@ -25,16 +25,16 @@ internal class KtorHttpResponse<T>(
         override val statusMessage: String
             get() = httpResponse.status.description
 
-        override fun marshalEmptyResponse(): CwHttpResponse<Void> {
+        override fun toEmptyContent(): CwHttpResponse<Void> {
             return KtorHttpResponse(this, entity = null)
         }
 
-        override fun <T> marshalResponse(strategy: CwHttpResponse.Raw.() -> T?): CwHttpResponse<T> {
+        override fun <T> toEntity(strategy: CwHttpResponse.Raw.() -> T?): CwHttpResponse<T> {
             val entity = strategy.invoke(this)
             return KtorHttpResponse(this, entity)
         }
 
-        override fun <T> marshalResponse(deserializationStrategy: DeserializationStrategy<T>): CwHttpResponse<T> {
+        override fun <T> toEntity(deserializationStrategy: DeserializationStrategy<T>): CwHttpResponse<T> {
             if (bodyContent.isBlank() || ContentType.Application.Json != httpResponse.contentType()) {
                 return KtorHttpResponse(this, entity = null)
             }

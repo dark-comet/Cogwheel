@@ -1,22 +1,36 @@
 package xyz.darkcomet.cogwheel
 
-import xyz.darkcomet.cogwheel.impl.DiscordClientDependencies
 import xyz.darkcomet.cogwheel.impl.DiscordClientImpl
+import xyz.darkcomet.cogwheel.impl.DiscordClientSettings
 import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
+import xyz.darkcomet.cogwheel.models.Intents
+import xyz.darkcomet.cogwheel.network.http.CwHttpClient
 
 class DiscordClientBuilder 
 internal constructor(private val authenticationMode: AuthenticationMode) {
     
-    var clientVersion: String? = null
-    var clientUrl: String? = null
+    var clientVersion: String?
+        get() = settings.customClientVersion
+        set(value) { settings.customClientVersion = value }
     
-    private val dependencies: DiscordClientDependencies = DiscordClientDependencies()
+    var clientUrl: String?
+        get() = settings.customClientUrl
+        set(value) { settings.customClientUrl = value }
     
-    internal fun internalDependencies(init: DiscordClientDependencies.() -> Unit) {
-        init.invoke(dependencies)
+    internal var cwHttpClientFactory: CwHttpClient.Factory
+        get() = settings.cwHttpClientFactory
+        set(value) { settings.cwHttpClientFactory = value }
+    
+    private val settings = DiscordClientSettings(authenticationMode)
+    
+    fun useGateway(intents: Intents) {
+        settings.gatewayEnabled = true
+        settings.gatewayIntents = intents
     }
+    
+    fun isGatewayEnabled() = settings.gatewayEnabled
 
     internal fun build(): DiscordClient {
-        return DiscordClientImpl(dependencies, authenticationMode, clientVersion, clientUrl)
+        return DiscordClientImpl(settings)
     }
 }

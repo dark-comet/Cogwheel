@@ -12,14 +12,14 @@ internal constructor(private val httpClient: CwHttpClient) {
     
     suspend fun getCurrent(): CwHttpResponse<ApplicationEntity?> {
         val request = CwHttpRequest.create(CwHttpMethod.GET, "/applications/@me")
-        return httpClient.submit(request).marshalResponse(ApplicationEntity.serializer())
+        return httpClient.submitHttp(request).toEntity(ApplicationEntity.serializer())
     }
     
     suspend fun editCurrent(request: ModifyCurrentApplicationRequest): CwHttpResponse<ApplicationEntity?> {
         val httpRequest = CwHttpRequest.create(CwHttpMethod.PATCH, "/applications/@me") {
             jsonParams(request, ModifyCurrentApplicationRequest.serializer())
         }
-        return httpClient.submit(httpRequest).marshalResponse(ApplicationEntity.serializer())
+        return httpClient.submitHttp(httpRequest).toEntity(ApplicationEntity.serializer())
     }
     
 //    fun getActivityInstance(applicationId: Snowflake, instanceId: String): CwHttpResponse<ApplicationInstanceEntity?> {

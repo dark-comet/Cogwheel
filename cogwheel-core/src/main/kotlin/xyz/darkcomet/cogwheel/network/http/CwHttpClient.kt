@@ -1,15 +1,14 @@
 package xyz.darkcomet.cogwheel.network.http
 
-import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
-import xyz.darkcomet.cogwheel.impl.models.CwBaseConfiguration
-import xyz.darkcomet.cogwheel.impl.models.CwCustomConfiguration
+import xyz.darkcomet.cogwheel.impl.DiscordClientSettings
+import xyz.darkcomet.cogwheel.impl.models.CwConfiguration
 
 internal interface CwHttpClient {
     
-    suspend fun submit(request: CwHttpRequest): CwHttpResponse.Raw
+    suspend fun submitHttp(request: CwHttpRequest): CwHttpResponse.Raw
 
     @FunctionalInterface
     interface Factory {
-        fun create(authMode: AuthenticationMode, configBase: CwBaseConfiguration, configCustom: CwCustomConfiguration): CwHttpClient
+        fun create(settings: DiscordClientSettings, config: CwConfiguration): CwHttpClient
     }
 }

@@ -1,4 +1,4 @@
-package xyz.darkcomet.cogwheel.network.http.resources
+package xyz.darkcomet.cogwheel.network.http.api
 
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals

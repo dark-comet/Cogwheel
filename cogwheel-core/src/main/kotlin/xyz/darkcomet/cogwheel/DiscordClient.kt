@@ -1,5 +1,8 @@
 package xyz.darkcomet.cogwheel
 
+import kotlinx.coroutines.runBlocking
+import xyz.darkcomet.cogwheel.events.Event
+import xyz.darkcomet.cogwheel.events.InteractionCreateEvent
 import xyz.darkcomet.cogwheel.impl.authentication.AuthenticationMode
 import xyz.darkcomet.cogwheel.impl.authentication.BotTokenAuthenticationMode
 import xyz.darkcomet.cogwheel.impl.authentication.OAuth2BearerAuthenticationMode
@@ -7,9 +10,13 @@ import xyz.darkcomet.cogwheel.network.http.api.*
 
 interface DiscordClient {
     
-    fun restApi() : RestApi
+    fun restApi(): ClientRestApi
+    fun gatewayApi(): ClientGatewayApi
+    fun events(): ClientEventManager
     
-    interface RestApi {
+    suspend fun startGatewayConnection()
+
+    interface ClientRestApi {
         fun application(): ApplicationApi
         fun applicationRoleConnectionMetadata(): ApplicationRoleConnectionMetadataApi
         fun auditLog(): AuditLogApi
@@ -17,6 +24,7 @@ interface DiscordClient {
         fun channel(): ChannelApi
         fun emoji(): EmojiApi
         fun entitlement(): EntitlementApi
+        fun gateway(): GatewayApi
         fun guild(): GuildApi
         fun guildScheduledEvent(): GuildScheduledEventApi
         fun guildTemplate(): GuildTemplateApi
@@ -30,6 +38,17 @@ interface DiscordClient {
         fun user(): UserApi
         fun voice(): VoiceApi
         fun webhook(): WebhookApi
+    }
+    
+    interface ClientGatewayApi {
+        fun requestGuildMembers() // TODO
+        fun updateVoiceState() // TODO
+        fun updatePresence() // TODO
+    }
+    
+    interface ClientEventManager {
+        fun <T : Event> subscribe(handler: DiscordClient.(T) -> Unit)
+        fun fireInteractionCreate(event: InteractionCreateEvent)
     }
     
     companion object {
@@ -46,8 +65,16 @@ interface DiscordClient {
         private fun build(authMode: AuthenticationMode, init: (DiscordClientBuilder.() -> Unit)? = null): DiscordClient {
             val builder = DiscordClientBuilder(authMode)
             init?.invoke(builder)
+
+            val client = builder.build()
             
-            return builder.build()
+            if (builder.isGatewayEnabled()) {
+                runBlocking {
+                    client.startGatewayConnection()
+                }
+            }
+            
+            return client
         }
     }
 }

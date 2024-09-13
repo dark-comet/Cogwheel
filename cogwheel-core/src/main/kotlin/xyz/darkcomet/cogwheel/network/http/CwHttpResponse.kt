@@ -12,8 +12,8 @@ interface CwHttpResponse<T> {
         val statusMessage: String
         val bodyContent: String?
 
-        fun marshalEmptyResponse(): CwHttpResponse<Void>
-        fun <T> marshalResponse(strategy: Raw.() -> T?) : CwHttpResponse<T>
-        fun <T> marshalResponse(deserializationStrategy: DeserializationStrategy<T>) : CwHttpResponse<T>
+        fun toEmptyContent(): CwHttpResponse<Void>
+        fun <T> toEntity(strategy: Raw.() -> T?) : CwHttpResponse<T>
+        fun <T> toEntity(deserializationStrategy: DeserializationStrategy<T>) : CwHttpResponse<T>
     }
 }
