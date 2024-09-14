@@ -1,4 +1,6 @@
 package xyz.darkcomet.cogwheel.events
 
-class GatewayReadyEvent : Event {
+import xyz.darkcomet.cogwheel.network.entities.GatewayReadyEventDataEntity
+
+class GatewayReadyEvent internal constructor(val data: GatewayReadyEventDataEntity) : Event {
 }

@@ -6,6 +6,7 @@ import xyz.darkcomet.cogwheel.DiscordClient
 import xyz.darkcomet.cogwheel.events.Event
 import xyz.darkcomet.cogwheel.events.InteractionCreateEvent
 import xyz.darkcomet.cogwheel.impl.models.CwConfiguration
+import xyz.darkcomet.cogwheel.network.CancellationTokenSource
 import xyz.darkcomet.cogwheel.network.gateway.CwGatewayClient
 import xyz.darkcomet.cogwheel.network.http.CwHttpClient
 import xyz.darkcomet.cogwheel.network.http.api.*
@@ -30,7 +31,7 @@ internal constructor(settings: DiscordClientSettings) : DiscordClient {
         logger.info("Initialized CwHttpClient: {}", restClient.javaClass.name)
 
         gatewayClient = if (settings.gatewayEnabled) {
-            settings.cwGatewayClientFactory.create(settings.token, settings.gatewayIntents)
+            settings.cwGatewayClientFactory.create(settings.token, settings.gatewayIntents, config.clientName)
         } else null
         
         restApi = ClientRestApiImpl(restClient)
@@ -44,7 +45,9 @@ internal constructor(settings: DiscordClientSettings) : DiscordClient {
             throw IllegalStateException("gatewayClient not initialized! Build DiscordClient using withGateway() first.")
         }
         
-        gatewayClient.startGatewayConnection {
+        val cancellationToken = CancellationTokenSource()
+        
+        gatewayClient.startGatewayConnection(cancellationToken) {
             restApi().gateway().get().entity!!.url
         }
     }

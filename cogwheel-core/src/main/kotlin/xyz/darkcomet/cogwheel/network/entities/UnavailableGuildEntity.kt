@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import xyz.darkcomet.cogwheel.models.Snowflake
 
 @Serializable
-data class EmojiEntity(
-    val id: Snowflake
+data class UnavailableGuildEntity(
+    val id: Snowflake, 
+    val unavailable: Boolean
 )

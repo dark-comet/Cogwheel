@@ -14,5 +14,5 @@ internal data class DiscordClientSettings(
     var customClientVersion: String? = null,
     var customClientUrl: String? = null,
     var gatewayEnabled: Boolean = false,
-    var gatewayIntents: Intents = Intents() // TODO
+    var gatewayIntents: Intents = Intents.none()
 )

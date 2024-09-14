@@ -6,19 +6,19 @@ import xyz.darkcomet.cogwheel.models.Snowflake
 
 @Serializable
 data class ApplicationEntity(
-    val id: Snowflake,
-    val name: String,
-    val icon: String?,
-    val description: String,
+    val id: Snowflake? = null,
+    val name: String? = null,
+    val icon: String? = null,
+    val description: String? = null,
     @SerialName("rpc_origins") val rpcOrigins: List<String>? = null,
-    @SerialName("bot_public") val botPublic: Boolean,
-    @SerialName("bot_require_code_grant") val botRequireCodeGrant: Boolean,
+    @SerialName("bot_public") val botPublic: Boolean? = null,
+    @SerialName("bot_require_code_grant") val botRequireCodeGrant: Boolean? = null,
     val bot: UserEntity? = null,
     @SerialName("terms_of_service_url") val termsOfServiceUrl: String? = null,
     @SerialName("privacy_policy_url") val privacyPolicyUrl: String? = null,
     @SerialName("owner") val owner: UserEntity? = null,
-    @SerialName("verify_key") val verifyKey: String,
-    val team: TeamEntity?,
+    @SerialName("verify_key") val verifyKey: String? = null,
+    val team: TeamEntity? = null,
     @SerialName("guild_id") val guildId: Snowflake? = null,
     val guild: GuildEntity? = null,
     @SerialName("primary_sku_id") val primarySkuId: Snowflake? = null,
@@ -34,5 +34,4 @@ data class ApplicationEntity(
     @SerialName("install_params") val installParams: ApplicationInstallParamsEntity? = null,
     @SerialName("integration_types_config") val integrationTypesConfig: Map<String, ApplicationIntegrationTypeConfigurationEntity>? = null,
     @SerialName("custom_install_url") val customInstallUrl: String? = null,
-) {
-}
+)

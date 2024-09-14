@@ -1,4 +1,4 @@
-package xyz.darkcomet.cogwheel.events;
+package xyz.darkcomet.cogwheel.events
 
-public interface Event {
+interface Event {
 }

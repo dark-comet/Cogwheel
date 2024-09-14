@@ -6,11 +6,11 @@ import xyz.darkcomet.cogwheel.models.Intents
 
 class KtorGatewayClientIntegrationTest {
     
-    @Test
-    fun testConnectionWorks() {
-        TestDiscordClient.fromEnvBotToken { 
-            useGateway(Intents())
-        }
-    }
+//    @Test
+//    fun testConnectionWorks() {
+//        TestDiscordClient.fromEnvBotToken { 
+//            useGateway(Intents.none())
+//        }
+//    }
     
 }

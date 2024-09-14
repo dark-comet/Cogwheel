@@ -11,6 +11,7 @@ slf4j-reload4j = "2.0.16"
 ktor-client-core = { module = "io.ktor:ktor-client-core-jvm", version.ref = "ktor-client" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor-client" }
 ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor-client" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-client" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter-api" }

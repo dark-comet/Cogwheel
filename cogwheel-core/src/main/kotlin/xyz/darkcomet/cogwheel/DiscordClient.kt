@@ -53,13 +53,11 @@ interface DiscordClient {
     
     companion object {
         fun fromBotToken(token: String, init: (DiscordClientBuilder.() -> Unit)? = null): DiscordClient {
-            val token = BotToken(token)
-            return build(token, init)
+            return build(BotToken(token), init)
         }
 
         fun fromOAuth2Token(token: String, init: (DiscordClientBuilder.() -> Unit)? = null): DiscordClient {
-            val token = OAuth2Token(token)
-            return build(token, init);
+            return build(OAuth2Token(token), init)
         }
 
         private fun build(token: Token, init: (DiscordClientBuilder.() -> Unit)? = null): DiscordClient {

@@ -55,7 +55,7 @@ internal class KtorHttpClient(
         return "DiscordBot ($officialUrl, $officialVersion) $libName/$libVersion"
     }
 
-    override suspend fun submitHttp(request: CwHttpRequest): CwHttpResponse.Raw {
+    override suspend fun submit(request: CwHttpRequest): CwHttpResponse.Raw {
         val endpointUrl = getEndpointUrl(request.endpointPath)
         
         val contentType = if (request.bodyContent != null) ContentType.Application.Json else ContentType.Any

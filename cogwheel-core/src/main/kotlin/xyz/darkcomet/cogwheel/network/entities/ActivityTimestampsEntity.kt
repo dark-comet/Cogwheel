@@ -1,9 +1,9 @@
 package xyz.darkcomet.cogwheel.network.entities
 
 import kotlinx.serialization.Serializable
-import xyz.darkcomet.cogwheel.models.Snowflake
 
 @Serializable
-data class EmojiEntity(
-    val id: Snowflake
+data class ActivityTimestampsEntity(
+    val start: Long? = null,
+    val end: Long? = null
 )
