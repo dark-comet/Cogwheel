@@ -2,11 +2,13 @@ package xyz.darkcomet.cogwheel.network.gateway.impl
 
 import xyz.darkcomet.cogwheel.models.ShardId
 import xyz.darkcomet.cogwheel.network.CancellationToken
+import xyz.darkcomet.cogwheel.network.gateway.GatewayEventSender
 
 internal class GatewaySession(
-    private val client: KtorGatewayClient, 
-    private val sessionCancellation: CancellationToken
+    private val eventSender: GatewayEventSender,
+    private val cancellation: CancellationToken
 ) {
+    
     private var initialized = false
     private var heartbeatStarted = false
     
@@ -17,7 +19,7 @@ internal class GatewaySession(
     var heartbeatIntervalMs: Long? = null
     var lastReceivedSequenceNumber: Int? = null
     
-    private var heartbeatManager: HeartbeatManager? = null
+    private var heartbeatManager: GatewayHeartbeatManager? = null
     
     fun initialize(
         apiVersion: Int,
@@ -50,8 +52,7 @@ internal class GatewaySession(
                 throw IllegalStateException("Background heartbeats already started!")
             }
 
-            val heartbeatManager = HeartbeatManager(sessionId!!, heartbeatIntervalMs!!, client, sessionCancellation)
-            this.heartbeatManager = heartbeatManager
+            this.heartbeatManager = GatewayHeartbeatManager({ lastReceivedSequenceNumber }, sessionId!!, heartbeatIntervalMs!!, eventSender, cancellation)
             this.heartbeatStarted = true
         }
 

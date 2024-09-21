@@ -4,15 +4,18 @@ import kotlinx.coroutines.delay
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import xyz.darkcomet.cogwheel.network.CancellationToken
+import xyz.darkcomet.cogwheel.network.gateway.GatewayEventSender
+import xyz.darkcomet.cogwheel.network.gateway.events.GatewayHeartbeatSendEvent
 import kotlin.random.Random
 
-internal class HeartbeatManager(
+internal class GatewayHeartbeatManager(
+    private val lastReceivedSequenceIdSupplier: () -> Int?,
     private val sessionId: String,
     private val heartbeatIntervalMs: Long,
-    private val client: KtorGatewayClient,
+    private val eventSender: GatewayEventSender,
     private val sessionCancellation: CancellationToken
 ) {
-    private val logger: Logger = LoggerFactory.getLogger(HeartbeatManager::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(GatewayHeartbeatManager::class.java)
     private var firstHeartbeat = true
     
     suspend fun beginBackgroundHeartbeats() {
@@ -30,9 +33,15 @@ internal class HeartbeatManager(
             }
 
             delay(delayMs)
-
-            logger.debug("Gateway heartbeat. delay: {}", delayMs)
-            client.heartbeat()
+            
+            val lastReceivedSequenceId = lastReceivedSequenceIdSupplier.invoke()
+            
+            if (lastReceivedSequenceId != null) {
+                logger.debug("Gateway heartbeat. delay: {}", delayMs)
+                eventSender.send(GatewayHeartbeatSendEvent(lastReceivedSequenceId))
+            } else {
+                logger.debug("Gateway heartbeat skipped: no last received sequence ID")
+            }
         }
     }
 }

@@ -38,7 +38,6 @@ class Snowflake(val value: Long) : Comparable<Snowflake> {
     }
 
     class Serializer : KSerializer<Snowflake> {
-        
         override val descriptor: SerialDescriptor
             get() = PrimitiveSerialDescriptor("Snowflake", PrimitiveKind.STRING)
 
@@ -51,6 +50,5 @@ class Snowflake(val value: Long) : Comparable<Snowflake> {
             val string = value.value.toString()
             encoder.encodeString(string)
         }
-        
     }
 }

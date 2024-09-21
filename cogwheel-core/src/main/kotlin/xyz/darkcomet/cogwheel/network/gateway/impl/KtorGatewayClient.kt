@@ -11,7 +11,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import kotlinx.serialization.json.Json
-import okhttp3.OkHttpClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import xyz.darkcomet.cogwheel.events.GatewayHelloEvent
@@ -21,14 +20,15 @@ import xyz.darkcomet.cogwheel.models.Intents
 import xyz.darkcomet.cogwheel.models.ShardId
 import xyz.darkcomet.cogwheel.network.CancellationToken
 import xyz.darkcomet.cogwheel.network.CancellationTokenSource
-import xyz.darkcomet.cogwheel.network.entities.GatewayIdentifyEventDataEntity
 import xyz.darkcomet.cogwheel.network.gateway.CwGatewayClient
 import xyz.darkcomet.cogwheel.network.gateway.GatewayEventMapping
 import xyz.darkcomet.cogwheel.network.gateway.GatewayEventPayload
+import xyz.darkcomet.cogwheel.network.gateway.GatewayEventSender
+import xyz.darkcomet.cogwheel.network.gateway.events.GatewayIdentifySendEvent
+import xyz.darkcomet.cogwheel.network.gateway.events.GatewaySendEvent
 import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.TimeUnit
 
 class KtorGatewayClient 
 private constructor(
@@ -41,16 +41,12 @@ private constructor(
         install(WebSockets) {
             contentConverter = KotlinxWebsocketSerializationConverter(Json)
         }
-        
-        engine {
-            preconfigured = OkHttpClient.Builder().pingInterval(20, TimeUnit.SECONDS).build()
-        }
     }
-
-    private var lastFetchedGatewayUrl: String? = null
     
     private val eventSendQueue: Queue<GatewayEventPayload> = ConcurrentLinkedQueue()
     private val eventReceiveQueue: Queue<GatewayEventPayload> = ConcurrentLinkedQueue()
+
+    private var lastFetchedGatewayUrl: String? = null
     private var session: GatewaySession? = null 
     
     private val logger: Logger = LoggerFactory.getLogger(KtorGatewayClient::class.java)
@@ -59,10 +55,7 @@ private constructor(
         logger.info("Gateway HttpClient initialized")
     }
 
-    override suspend fun startGatewayConnection(
-        cancellationToken: CancellationToken,
-        gatewayUrlFetcher: suspend () -> String?
-    ) {
+    override suspend fun startGatewayConnection(cancellationToken: CancellationToken, gatewayUrlFetcher: suspend () -> String?) {
         logger.info("Starting Gateway connection...")
         
         var sessionCount = 0
@@ -105,11 +98,8 @@ private constructor(
             }
         }
     }
-
-    private suspend fun fetchGatewayUrl(
-        gatewayUrlFetcher: suspend () -> String?,
-        sessionCancellation: CancellationTokenSource
-    ): String? {
+    
+    private suspend fun fetchGatewayUrl(gatewayUrlFetcher: suspend () -> String?, sessionCancellation: CancellationTokenSource): String? {
         logger.debug("Fetching Gateway URL...")
         var attempts = 0
         var gatewayUrl: String?
@@ -132,11 +122,7 @@ private constructor(
         return gatewayUrl
     }
 
-    private suspend fun establishGatewaySession(
-        gatewayUrl: String,
-        sessionCount: Int,
-        sessionCancellation: CancellationToken
-    ) {
+    private suspend fun establishGatewaySession(gatewayUrl: String, sessionCount: Int, sessionCancellation: CancellationToken) {
         logger.debug("Establishing Gateway connection: GET {} (session {})", lastFetchedGatewayUrl, sessionCount)
         
         synchronized(this) {
@@ -147,9 +133,11 @@ private constructor(
         
         httpClient.wss(method = HttpMethod.Get, host = gatewayUrl) {
             logger.info("Connected to {} successfully!", gatewayUrl)
-            val wssSession = this
             
-            performHandshake(wssSession, sessionCancellation)
+            val wssSession = this
+            val eventSender = KtorGatewaySessionEventSender(wssSession)
+            
+            performHandshake(eventSender, wssSession, sessionCancellation)
 
             val receiverJob = launch { eventReceiverLoop(wssSession, sessionCancellation) }
             val senderJob = launch { eventSenderLoop(this, wssSession, sessionCancellation) }
@@ -164,17 +152,18 @@ private constructor(
     }
 
     private suspend fun performHandshake(
-        wssSession: DefaultClientWebSocketSession,
-        sessionCancellation: CancellationToken
+        eventSender: GatewayEventSender, 
+        wssSession: DefaultClientWebSocketSession, 
+        cancellation: CancellationToken
     ) {
-        val gatewaySession = GatewaySession(this, sessionCancellation)
+        val gatewaySession = GatewaySession(eventSender, cancellation)
         
         synchronized(this) {
             this.session = gatewaySession
         }
         
         val helloEvent = receiveHelloEvent(wssSession, gatewaySession)
-        sendIdentifyWithIntents(wssSession)
+        sendIdentifyWithIntents(eventSender)
         val readyEvent = receiveReadyEvent(wssSession, gatewaySession)
         
         synchronized(this) {
@@ -190,10 +179,7 @@ private constructor(
         gatewaySession.beginBackgroundHeartbeats()
     }
 
-    private suspend fun receiveHelloEvent(
-        wssSession: DefaultClientWebSocketSession,
-        gatewaySession: GatewaySession
-    ): GatewayHelloEvent {
+    private suspend fun receiveHelloEvent(wssSession: DefaultClientWebSocketSession, gatewaySession: GatewaySession): GatewayHelloEvent {
         val payload = receiveEvent(wssSession, gatewaySession)
         val firstEvent = GatewayEventMapping.decode(payload)
 
@@ -204,27 +190,14 @@ private constructor(
         return firstEvent
     }
 
-    private suspend fun sendIdentifyWithIntents(session: DefaultClientWebSocketSession) {
-        val data = GatewayIdentifyEventDataEntity(
-            token = token.value,
-            properties = GatewayIdentifyEventDataEntity.IdentifyConnectionPropertiesEntity(
-                os = System.getProperty("os.name"),
-                browser = libName,
-                device = libName
-            ),
-            intents = intents.value
-        )
+    private suspend fun sendIdentifyWithIntents(eventSender: GatewayEventSender) {
+        val osName = System.getProperty("os.name")
+        val event = GatewayIdentifySendEvent(token.value, osName, libName, intents)
         
-        val dataElement = Json.encodeToJsonElement(GatewayIdentifyEventDataEntity.serializer(), data)
-        val payload = GatewayEventPayload(op = GatewayEventMapping.OP_IDENTIFY, d = dataElement)
-        
-        session.sendSerialized(payload)
+        eventSender.send(event)
     }
 
-    private suspend fun receiveReadyEvent(
-        wssSession: DefaultClientWebSocketSession,
-        gatewaySession: GatewaySession
-    ): GatewayReadyEvent {
+    private suspend fun receiveReadyEvent(wssSession: DefaultClientWebSocketSession, gatewaySession: GatewaySession): GatewayReadyEvent {
         val payload = receiveEvent(wssSession, gatewaySession)
         val secondEvent = GatewayEventMapping.decode(payload)
 
@@ -236,20 +209,24 @@ private constructor(
         return secondEvent
     }
 
-    private suspend fun eventReceiverLoop(session: DefaultClientWebSocketSession, cancellationToken: CancellationToken) {
-        while (!cancellationToken.isCanceled()) {
-            val payload = session.receiveDeserialized<GatewayEventPayload>()
+    private suspend fun eventReceiverLoop(wssSession: DefaultClientWebSocketSession, cancellation: CancellationToken) {
+        while (!cancellation.isCanceled()) {
+            val payload = wssSession.receiveDeserialized<GatewayEventPayload>()
             logger.debug("Received payload: {}", payload)
+            
+            if (payload.s != null) {
+                synchronized(this) {
+                    if (this.session != null) {
+                        this.session!!.lastReceivedSequenceNumber = payload.s
+                    }
+                }
+            }
             
             eventReceiveQueue.add(payload)
         }
     }
     
-    private suspend fun eventSenderLoop(
-        coroutine: CoroutineScope,
-        session: DefaultClientWebSocketSession,
-        cancellation: CancellationToken
-    ) {
+    private suspend fun eventSenderLoop(coroutine: CoroutineScope, session: DefaultClientWebSocketSession, cancellation: CancellationToken) {
         while (!cancellation.isCanceled()) {
             val sendEvent = eventSendQueue.poll()
             
@@ -268,15 +245,12 @@ private constructor(
     private fun eventProcessorLoop(session: DefaultClientWebSocketSession, cancellation: CancellationToken) {
     }
 
-    private suspend fun receiveEvent(
-        wssSession: DefaultClientWebSocketSession,
-        gatewaySession: GatewaySession
-    ): GatewayEventPayload {
+    private suspend fun receiveEvent(wssSession: DefaultClientWebSocketSession, gatewaySession: GatewaySession): GatewayEventPayload {
         val payload = wssSession.receiveDeserialized<GatewayEventPayload>()
         logger.debug("Received Gateway payload: {}", payload)
 
         if (payload.s != null) {
-            if (payload.s < gatewaySession.lastReceivedSequenceNumber ?: 0) {
+            if (payload.s < (gatewaySession.lastReceivedSequenceNumber ?: 0)) {
                 logger.warn("Received Gateway payload has 's' < last locally received 's' number: {} < {}", payload.s, gatewaySession.lastReceivedSequenceNumber)
             }
             gatewaySession.lastReceivedSequenceNumber = payload.s
@@ -284,9 +258,9 @@ private constructor(
 
         return payload
     }
-
-    fun heartbeat() {
-        // TODO: 
+    
+    override suspend fun send(event: GatewaySendEvent) {
+        eventSendQueue.add(event.payload())
     }
 
     class Factory : CwGatewayClient.Factory {

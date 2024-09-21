@@ -5,7 +5,7 @@ import kotlinx.serialization.json.JsonElement
 
 @Serializable
 data class GatewayEventPayload(
-    val op: Int,
+    val op: GatewayOpCode,
     val d: JsonElement? = null,
     val s: Int? = null,
     val t: String? = null
